@@ -10,7 +10,15 @@ namespace ProgrammingLanguage
     {
         static void Main(string[] args)
         {
+
+
+
         }
+    }
+
+    internal class A
+    {
+
     }
 }
  

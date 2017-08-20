@@ -1,19 +1,16 @@
 ﻿using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ProgrammingLanguage.Lexer;
 
 namespace ProgrammingLanguageTest
 {
     [TestFixture]
-    public class Class1
+    public class LexerTest
     {
         [Test]
         public void Test1()
         {
-
+            Lexer lexer = new Lexer("");
+            lexer.Lex();
         }
     }
 }
