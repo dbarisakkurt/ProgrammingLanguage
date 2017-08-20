@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace ProgrammingLanguage.Lexer
 {
-    internal enum TokenType
+    public enum TokenType
     {
         VARIABLE,
         NUMBER,
@@ -33,6 +28,7 @@ namespace ProgrammingLanguage.Lexer
         LEFT_CURLY_BRACE,
         RIGHT_CURLY_BRACE,
         NIL,
+        COMMA,
 
         PRINT,
         IF_KEYWORD,

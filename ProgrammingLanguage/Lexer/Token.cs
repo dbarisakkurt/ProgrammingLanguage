@@ -7,11 +7,14 @@ namespace ProgrammingLanguage.Lexer
         private TokenType m_TokenType;
         private object m_Value;
 
-        public Token(TokenType tokenType, object value)
+        internal Token(TokenType tokenType, object value)
         {
             m_TokenType = tokenType;
             m_Value = value;
         }
+
+        internal TokenType TokenType { get { return m_TokenType; } }
+        internal object Value { get { return m_Value; } }
 
         public override string ToString()
         {
