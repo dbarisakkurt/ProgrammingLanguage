@@ -1,6 +1,7 @@
 ﻿using System;
 using ProgrammingLanguage.LexicalAnalysis;
 
+//grammar based on https://github.com/fsacer/FailLang by fsacer but simplified
 
 //program      → declaration* EOF;
 //declaration  → funDecl | varDecl | statement ;
@@ -26,7 +27,7 @@ using ProgrammingLanguage.LexicalAnalysis;
 //call        → primary( "(" arguments? ")" )* ;
 //primary     → NUMBER | STRING | "doğru" | "yanlış" | "boşdeğer" | IDENTIFIER | "(" expression ")"
 
-			
+
 //arguments    → expression( "," expression )* ;
 //parameters   → IDENTIFIER( "," IDENTIFIER )* ;
 //functionBody → "(" parameters? ")" block ;
