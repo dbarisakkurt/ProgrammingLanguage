@@ -1,15 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ProgrammingLanguage.Lexer
+namespace ProgrammingLanguage.LexicalAnalysis
 {
     internal class Lexer
     {
+        //###################################################################################
+        #region Fields
+
         private string m_Input;
         private int m_CurrentPosition;
         private char m_CurrentChar;
         private Dictionary<string, TokenType> m_Keywords = new Dictionary<string, TokenType>();
         private List<Token> m_TokenList = new List<Token>();
+
+        #endregion
+
+        //###################################################################################
+        #region Properties
 
         internal List<Token> TokenList
         {
@@ -18,6 +26,11 @@ namespace ProgrammingLanguage.Lexer
                 return m_TokenList;
             }
         }
+
+        #endregion
+
+        //###################################################################################
+        #region Internal Methods
 
         internal Lexer(string input)
         {
@@ -161,6 +174,11 @@ namespace ProgrammingLanguage.Lexer
             }
         }
 
+        #endregion
+
+        //###################################################################################
+        #region Private Methods
+
         private string ParseNumber()
         {
             int start = m_CurrentPosition;
@@ -290,5 +308,7 @@ namespace ProgrammingLanguage.Lexer
             m_Keywords.Add("yazdır", TokenType.PRINT);
             m_Keywords.Add("değişken", TokenType.VARIABLE);
         }
+
+        #endregion
     }
 }

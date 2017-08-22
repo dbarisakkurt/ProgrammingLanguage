@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProgrammingLanguage
 {
     internal static class ConsoleHelper
     {
+        //###################################################################################
+        #region Internal Methods
+
         internal static void ParseArguments(string[] arguments)
         {
             if(arguments.Length == 0 || arguments.Length > 1)
@@ -29,10 +28,17 @@ namespace ProgrammingLanguage
             }
         }
 
+        #endregion
+
+        //###################################################################################
+        #region Private Methods
+
         private static void PrintHelp()
         {
             Console.WriteLine("Usage: language.exe <filename>");
             Console.WriteLine("Usage: language.exe -v");
         }
+
+        #endregion
     }
 }

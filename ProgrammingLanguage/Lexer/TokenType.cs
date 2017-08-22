@@ -1,5 +1,5 @@
 ﻿
-namespace ProgrammingLanguage.Lexer
+namespace ProgrammingLanguage.LexicalAnalysis
 {
     public enum TokenType
     {

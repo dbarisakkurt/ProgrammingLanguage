@@ -1,8 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+//TODO: negative test cases for lexer
+//.5
+//5.
+//05
+//05.4
 
 namespace ProgrammingLanguage
 {
@@ -10,15 +11,7 @@ namespace ProgrammingLanguage
     {
         static void Main(string[] args)
         {
-
-
-
         }
-    }
-
-    internal class A
-    {
-
     }
 }
  

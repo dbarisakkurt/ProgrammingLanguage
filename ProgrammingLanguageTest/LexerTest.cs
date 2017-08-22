@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using ProgrammingLanguage.Lexer;
+using ProgrammingLanguage.LexicalAnalysis;
 
 namespace ProgrammingLanguageTest
 {
@@ -103,10 +103,6 @@ namespace ProgrammingLanguageTest
             Assert.AreEqual(TokenType.EQUAL, lexer.TokenList[2].TokenType);
         }
 
-        //negative test cases
-        //.5
-        //5.
-        //05
-        //05.4
+
     }
 }
