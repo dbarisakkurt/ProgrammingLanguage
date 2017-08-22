@@ -2,8 +2,6 @@
 using ProgrammingLanguage.LexicalAnalysis;
 
 
-
-
 //program      → declaration* EOF;
 //declaration  → funDecl | varDecl | statement ;
 //funDecl      → "fonk" IDENTIFIER functionBody;
@@ -14,8 +12,6 @@ using ProgrammingLanguage.LexicalAnalysis;
 //printStmt    → "yazdır" expression ";" ;
 //whileStmt    → "oldukça" "(" expression ")" statement ;
 //block        → "{" declaration* "}" ;
-
-
 
 
 //expression  → assignment ;
@@ -29,19 +25,11 @@ using ProgrammingLanguage.LexicalAnalysis;
 //unary       → ( "!" | "-" ) unary | primary | call  ;
 //call        → primary( "(" arguments? ")" )* ;
 //primary     → NUMBER | STRING | "doğru" | "yanlış" | "boşdeğer" | IDENTIFIER | "(" expression ")"
-			
-			
-			
-		
+
 			
 //arguments    → expression( "," expression )* ;
 //parameters   → IDENTIFIER( "," IDENTIFIER )* ;
 //functionBody → "(" parameters? ")" block ;
-
-
-
-
-
 
 namespace ProgrammingLanguage.SyntaxAnalysis
 {
@@ -75,6 +63,50 @@ namespace ProgrammingLanguage.SyntaxAnalysis
         #region Internal Methods
 
         internal void Parse()
+        {
+            while(Match(TokenType.EOF))
+            {
+                ParseDecleration();
+            }
+        }
+
+        #endregion
+
+        //###################################################################################
+        #region Private Methods
+
+        private bool Match(TokenType tokenType)
+        {
+            return false;
+        }
+
+        private void ParseDecleration()
+        {
+            if(Match(TokenType.FUN_KEYWORD))
+            {
+                ParseFunctionDecleration();
+            }
+            else if(Match(TokenType.VAR_KEYWORD))
+            {
+                ParseVariableDecleration();
+            }
+            else
+            {
+                ParseStatement();
+            }
+        }
+
+        private void ParseFunctionDecleration()
+        {
+
+        }
+
+        private void ParseVariableDecleration()
+        {
+
+        }
+
+        private void ParseStatement()
         {
 
         }

@@ -174,6 +174,11 @@ namespace ProgrammingLanguage.LexicalAnalysis
             }
         }
 
+        internal Token GetNextToken()
+        {
+            return null;
+        }
+
         #endregion
 
         //###################################################################################

@@ -34,6 +34,8 @@ namespace ProgrammingLanguage.LexicalAnalysis
         IF_KEYWORD,
         ELSE_KEYWORD,
         WHILE_KEYWORD,
+        FUN_KEYWORD,
+        VAR_KEYWORD,
 
         COMMENT,
         EOF,
