@@ -41,11 +41,12 @@ namespace ProgrammingLanguage.LexicalAnalysis
 
         internal void Lex()
         {
+            Token token = null;
+
             while (!IsAtEnd())
             {
 
                 m_CurrentChar = m_Input[m_CurrentPosition];
-                Token token = null;
 
                 switch (m_CurrentChar)
                 {
@@ -138,18 +139,30 @@ namespace ProgrammingLanguage.LexicalAnalysis
                         token = new Token(TokenType.STRING, resultString);
                         m_TokenList.Add(token);
                         break;
+                    case ';':
+                        Advance();
+                        break;
+                    case '(':
+                        token = new Token(TokenType.LEFT_PAREN, '(');
+                        Advance();
+                        m_TokenList.Add(token);
+                        break;
+                    case ')':
+                        token = new Token(TokenType.RIGHT_PAREN, ')');
+                        Advance();
+                        m_TokenList.Add(token);
+                        break;
                     default:
                         if (char.IsDigit(m_CurrentChar))
                         {
                             string resultNumber = ParseNumber();
                             token = new Token(TokenType.NUMBER, resultNumber);
                             m_TokenList.Add(token);
-                            Advance();
                         }
                         else if (char.IsLetter(m_CurrentChar))
                         {
                             string resultVar = ParseVariable();
-                            if(m_Keywords.ContainsKey(resultVar))
+                            if (m_Keywords.ContainsKey(resultVar))
                             {
                                 token = new Token(m_Keywords[resultVar], resultVar);
                             }
@@ -158,13 +171,13 @@ namespace ProgrammingLanguage.LexicalAnalysis
                                 token = new Token(TokenType.VARIABLE, resultVar);
                             }
                             m_TokenList.Add(token);
-                            Advance();
+                            //Advance();
                         }
-                        else if(IsAtEnd())
-                        {
-                            token = new Token(TokenType.EOF, null);
-                            m_TokenList.Add(token);
-                        }
+                        //else if(IsAtEnd())
+                        //{
+                        //    token = new Token(TokenType.EOF, null);
+                        //    m_TokenList.Add(token);
+                        //}
                         else
                         {
                             throw new InvalidOperationException();
@@ -172,11 +185,9 @@ namespace ProgrammingLanguage.LexicalAnalysis
                         break;
                 }
             }
-        }
 
-        internal Token GetNextToken()
-        {
-            return null;
+            token = new Token(TokenType.EOF, null);
+            m_TokenList.Add(token);
         }
 
         #endregion
@@ -305,13 +316,13 @@ namespace ProgrammingLanguage.LexicalAnalysis
         {
             m_Keywords.Add("eğer", TokenType.IF_KEYWORD);
             m_Keywords.Add("değilse", TokenType.ELSE_KEYWORD);
-            m_Keywords.Add("doğru", TokenType.TRUE);
-            m_Keywords.Add("yanlış", TokenType.FALSE);
-            m_Keywords.Add("ve", TokenType.AND);
-            m_Keywords.Add("veya", TokenType.OR);
+            m_Keywords.Add("doğru", TokenType.TRUE_KEYWORD);
+            m_Keywords.Add("yanlış", TokenType.FALSE_KEYWORD);
+            m_Keywords.Add("ve", TokenType.AND_KEYWORD);
+            m_Keywords.Add("veya", TokenType.OR_KEYWORD);
             m_Keywords.Add("oldukça", TokenType.WHILE_KEYWORD);
-            m_Keywords.Add("yazdır", TokenType.PRINT);
-            m_Keywords.Add("değişken", TokenType.VARIABLE);
+            m_Keywords.Add("yazdır", TokenType.PRINT_KEYWORD);
+            m_Keywords.Add("değişken", TokenType.VAR_KEYWORD);
         }
 
         #endregion

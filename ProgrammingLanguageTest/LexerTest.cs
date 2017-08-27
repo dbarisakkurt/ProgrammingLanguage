@@ -22,10 +22,10 @@ namespace ProgrammingLanguageTest
         [TestCase(" ! ", TokenType.NOT)]
         [TestCase("!=", TokenType.NOT_EQUAL)]
         [TestCase(" != ", TokenType.NOT_EQUAL)]
-        [TestCase("ve", TokenType.AND)]
-        [TestCase(" ve ", TokenType.AND)]
-        [TestCase("veya", TokenType.OR)]
-        [TestCase(" veya ", TokenType.OR)]
+        [TestCase("ve", TokenType.AND_KEYWORD)]
+        [TestCase(" ve ", TokenType.AND_KEYWORD)]
+        [TestCase("veya", TokenType.OR_KEYWORD)]
+        [TestCase(" veya ", TokenType.OR_KEYWORD)]
         [TestCase("<", TokenType.LESS_THAN)]
         [TestCase(" < ", TokenType.LESS_THAN)]
         [TestCase("<=", TokenType.LESS_THAN_OR_EQUAL)]
@@ -59,7 +59,7 @@ namespace ProgrammingLanguageTest
             Lexer lexer = new Lexer(input);
             lexer.Lex();
 
-            Assert.AreEqual(1, lexer.TokenList.Count);
+            Assert.AreEqual(2, lexer.TokenList.Count);
             Assert.AreEqual(input.Trim().Trim('"'), lexer.TokenList[0].Value.ToString());
             Assert.AreEqual(tokenType, lexer.TokenList[0].TokenType);
         }
@@ -70,39 +70,68 @@ namespace ProgrammingLanguageTest
             Lexer lexer = new Lexer(input);
             lexer.Lex();
 
-            Assert.AreEqual(4, lexer.TokenList.Count);
+            Assert.AreEqual(5, lexer.TokenList.Count);
             Assert.AreEqual(TokenType.PLUS, lexer.TokenList[0].TokenType);
             Assert.AreEqual(TokenType.MINUS, lexer.TokenList[1].TokenType);
             Assert.AreEqual(TokenType.MULTIPLY, lexer.TokenList[2].TokenType);
             Assert.AreEqual(TokenType.DIVIDE, lexer.TokenList[3].TokenType);
+            Assert.AreEqual(TokenType.EOF, lexer.TokenList[4].TokenType);
         }
 
         [TestCase("== =")]
         [TestCase("= ==")]
         [TestCase("+ ==")]
         [TestCase("+ =")]
-        public void CreateLexer_AnalyzeInputLexically_2Tokens(string input)
-        {
-            Lexer lexer = new Lexer(input);
-            lexer.Lex();
-
-            Assert.AreEqual(2, lexer.TokenList.Count);
-        }
-
-        [TestCase(@"+ # hello
-            - # world *
-            ==")]
-        public void CreateLexer_AnalyzeInputWithCommentLexically_3Tokens(string input)
+        public void CreateLexer_AnalyzeInputLexically_3Tokens(string input)
         {
             Lexer lexer = new Lexer(input);
             lexer.Lex();
 
             Assert.AreEqual(3, lexer.TokenList.Count);
+        }
+
+        [TestCase("ve veya")]
+        [TestCase("veya ve")]
+        public void CreateLexer_AndOrParse_GetTokens(string input)
+        {
+            Lexer lexer = new Lexer(input);
+            lexer.Lex();
+
+            Assert.AreEqual(3, lexer.TokenList.Count);
+        }
+
+        [TestCase(@"+ # hello
+            - # world *
+            ==")]
+        public void CreateLexer_AnalyzeInputWithCommentLexically_4Tokens(string input)
+        {
+            Lexer lexer = new Lexer(input);
+            lexer.Lex();
+
+            Assert.AreEqual(4, lexer.TokenList.Count);
             Assert.AreEqual(TokenType.PLUS, lexer.TokenList[0].TokenType);
             Assert.AreEqual(TokenType.MINUS, lexer.TokenList[1].TokenType);
             Assert.AreEqual(TokenType.EQUAL, lexer.TokenList[2].TokenType);
+            Assert.AreEqual(TokenType.EOF, lexer.TokenList[3].TokenType);
         }
 
+        [TestCase("değişken hhhhhhh = 5 <= 6 ve 7 >= 5;", 11)]        
+        [TestCase("değişken eeee = yanlış ve doğru;", 7)]            
+        [TestCase("değişken a=2;", 5)]                               
+        [TestCase("değişken aa=2;", 5)]                              
+        [TestCase("değişken a=234;", 5)]                             
+        [TestCase("değişken a =2;", 5)]                              
+        [TestCase("değişken a= 2;", 5)]                              
+        [TestCase("değişken a = ( 5 + 4 );", 9)]
+        [TestCase("değişken a = (2);", 7)]
+        [TestCase("değişken a = ( 2 ) ;", 7)]
+        [TestCase("değişken a = ( 2 );", 7)]
+        public void CreateLexer_AnalyzeVariableDecleration_4Tokens(string input, int tokenCount)
+        {
+            Lexer lexer = new Lexer(input);
+            lexer.Lex();
 
+            Assert.AreEqual(tokenCount, lexer.TokenList.Count);
+        }
     }
 }
