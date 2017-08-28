@@ -152,6 +152,16 @@ namespace ProgrammingLanguage.LexicalAnalysis
                         Advance();
                         m_TokenList.Add(token);
                         break;
+                    case '{':
+                        token = new Token(TokenType.LEFT_CURLY_BRACE, '{');
+                        Advance();
+                        m_TokenList.Add(token);
+                        break;
+                    case '}':
+                        token = new Token(TokenType.RIGHT_CURLY_BRACE, '}');
+                        Advance();
+                        m_TokenList.Add(token);
+                        break;
                     default:
                         if (char.IsDigit(m_CurrentChar))
                         {
@@ -323,6 +333,8 @@ namespace ProgrammingLanguage.LexicalAnalysis
             m_Keywords.Add("oldukça", TokenType.WHILE_KEYWORD);
             m_Keywords.Add("yazdır", TokenType.PRINT_KEYWORD);
             m_Keywords.Add("değişken", TokenType.VAR_KEYWORD);
+            m_Keywords.Add("dön", TokenType.RETURN_KEYWORD);
+            m_Keywords.Add("fonk", TokenType.FUN_KEYWORD);
         }
 
         #endregion

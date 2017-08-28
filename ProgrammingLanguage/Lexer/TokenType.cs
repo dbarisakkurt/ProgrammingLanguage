@@ -36,6 +36,7 @@ namespace ProgrammingLanguage.LexicalAnalysis
         WHILE_KEYWORD,
         FUN_KEYWORD,
         VAR_KEYWORD,
+        RETURN_KEYWORD,
 
         COMMENT,
         EOF,

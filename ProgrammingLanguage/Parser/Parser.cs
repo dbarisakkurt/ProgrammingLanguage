@@ -5,18 +5,19 @@ using System.Collections.Generic;
 //grammar based on https://github.com/fsacer/FailLang by fsacer but simplified
 
 //program      → declaration* EOF;
-//declaration  → funDecl | varDecl | statement ;                                                        NOT IMPLEMENTED
-//funDecl      → "fonk" IDENTIFIER functionBody;                                                        NOT IMPLEMENTED
+//declaration  → funDecl | varDecl | statement ;                                                        
+//funDecl      → "fonk" IDENTIFIER functionBody;                                                        
 //varDecl      → "değişken" IDENTIFIER( "=" expression )? ";" ;
-//statement    → exprStmt | ifStmt | printStmt | returnStmt | whileStmt | block;                        NOT IMPLEMENTED
-//exprStmt     → expression ";" ;                                                                       
+//statement    → exprStmt | ifStmt | printStmt | returnStmt | whileStmt | block;                        
+//exprStmt     → assignment ";" ;                                                                       
 //ifStmt       → "eğer" "(" expression ")" statement( "değilse" statement )? ;                          
 //printStmt    → "yazdır" expression ";" ;                                                              
 //whileStmt    → "oldukça" "(" expression ")" statement ;                                               
-//block        → "{" declaration* "}" ;                                                                
+//block        → "{" declaration* "}" ;              
+//return       → "dön" expression ";"
 
-
-//expression  → IDENTIFIER (( "=" ) expression )? | logic_or ;
+//assignment  → IDENTIFIER (( "=" ) assignment )? | expression                      
+//expression  → logic_or ;                                                          
 //logic_or    → logic_and ( "veya" logic_and )*
 //logic_and   → equality ( "ve" equality )*
 //equality    → comparison (( "!=" | "==" ) comparison )*
@@ -24,13 +25,13 @@ using System.Collections.Generic;
 //term        → factor(( "-" | "+" ) factor )*                              
 //factor      → unary(( "/" | "*" ) unary )*
 //unary       → ( "!" | "-" ) unary | primary | call  ;
-//call        → primary( "(" arguments? ")" )* ;                                                        NOT IMPLEMENTED
+//call        → primary( "(" arguments? ")" )* ;                                                        
 //primary     → NUMBER | STRING | "doğru" | "yanlış" | "boşdeğer" | IDENTIFIER | "(" expression ")"
 
 
-//arguments    → expression( "," expression )* ;                                                        NOT IMPLEMENTED
-//parameters   → IDENTIFIER( "," IDENTIFIER )* ;                                                        NOT IMPLEMENTED
-//functionBody → "(" parameters? ")" block ;                                                            NOT IMPLEMENTED
+//arguments    → expression( "," expression )* ;                                                        
+//parameters   → IDENTIFIER( "," IDENTIFIER )* ;                                                        
+//functionBody → "(" parameters? ")" block ;                                                            
 
 namespace ProgrammingLanguage.SyntaxAnalysis
 {
@@ -118,11 +119,29 @@ namespace ProgrammingLanguage.SyntaxAnalysis
 
         #region Statement Parse Methods
 
+        private void ParseAssignment()
+        {
+            if(Match(TokenType.VARIABLE))
+            {
+                Eat(TokenType.VARIABLE);
+
+                if(Match(TokenType.ASSIGNMENT))
+                {
+                    Eat(TokenType.ASSIGNMENT);
+                    ParseAssignment();
+                }
+            }
+            else
+            {
+                ParseExpression();
+            }
+        }
+
         private void ParseDecleration()
         {
             if(Match(TokenType.FUN_KEYWORD))
             {
-                ParseFunctionDecleration();
+                ParseFunDeclaration();
             }
             else if(Match(TokenType.VAR_KEYWORD))
             {
@@ -132,11 +151,6 @@ namespace ProgrammingLanguage.SyntaxAnalysis
             {
                 ParseStatement();
             }
-        }
-
-        private void ParseFunctionDecleration()
-        {
-
         }
 
         private void ParseVariableDecleration()
@@ -154,7 +168,39 @@ namespace ProgrammingLanguage.SyntaxAnalysis
 
         private void ParseStatement()
         {
+            if(Match(TokenType.VARIABLE))
+            {
+                ParseExprStatement();
+            }
+            else if(Match(TokenType.IF_KEYWORD))
+            {
+                ParseIfStatement();
+            }
+            else if (Match(TokenType.PRINT_KEYWORD))
+            {
+                ParsePrintStatement();
+            }
+            else if (Match(TokenType.WHILE_KEYWORD))
+            {
+                ParseWhileStatement();
+            }
+            else if (Match(TokenType.LEFT_CURLY_BRACE))
+            {
+                ParseBlock();
+            }
+            else if (Match(TokenType.RETURN_KEYWORD))
+            {
+                ParseReturn();
+            }
+        }
 
+        private void ParseReturn()
+        {
+            if(Match(TokenType.RETURN_KEYWORD))
+            {
+                Eat(TokenType.RETURN_KEYWORD);
+                ParseExpression();
+            }
         }
 
         private void ParsePrintStatement()
@@ -185,14 +231,19 @@ namespace ProgrammingLanguage.SyntaxAnalysis
             if (Match(TokenType.LEFT_CURLY_BRACE))
             {
                 Eat(TokenType.LEFT_CURLY_BRACE);
-                ParseDecleration();
+
+                while(!Match(TokenType.RIGHT_CURLY_BRACE))
+                {
+                    ParseDecleration();
+                }
+
                 Eat(TokenType.RIGHT_CURLY_BRACE);
             }
         }
 
         private void ParseExprStatement()
         {
-            ParseExpression();
+            ParseAssignment();
         }
 
         private void ParseIfStatement()
@@ -215,28 +266,40 @@ namespace ProgrammingLanguage.SyntaxAnalysis
 
         }
 
+        private void ParseFunDeclaration()
+        {
+            if(Match(TokenType.FUN_KEYWORD))
+            {
+                Eat(TokenType.FUN_KEYWORD);
+                Eat(TokenType.VARIABLE);
+                ParseFunctionBody();
+            }
+        }
+
         #endregion
 
         #region Expression Parse Methods
 
         private void ParseExpression()
         {
-            if(Match(TokenType.VARIABLE))
-            {
-                Eat(TokenType.VARIABLE);
+            ParseLogicOr();
 
-                if(Match(TokenType.ASSIGNMENT))
-                {
-                    Eat(TokenType.ASSIGNMENT);
+            //if(Match(TokenType.VARIABLE))
+            //{
+            //    Eat(TokenType.VARIABLE);
 
-                    ParseExpression();
-                }
+            //    if(Match(TokenType.ASSIGNMENT))
+            //    {
+            //        Eat(TokenType.ASSIGNMENT);
 
-            }
-            else
-            {
-                ParseLogicOr();
-            }
+            //        ParseExpression();
+            //    }
+
+            //}
+            //else
+            //{
+            //    ParseLogicOr();
+            //}
         }
 
         private void ParseLogicOr()
@@ -367,10 +430,13 @@ namespace ProgrammingLanguage.SyntaxAnalysis
             {
                 ParsePrimary();
             }
-            //else if()
-            //{
-            //    ParseCall();
-            //}
+            else if(this.NextToken().TokenType == TokenType.NUMBER || this.NextToken().TokenType == TokenType.STRING
+                    || this.NextToken().TokenType == TokenType.TRUE_KEYWORD || this.NextToken().TokenType == TokenType.FALSE_KEYWORD
+                    || this.NextToken().TokenType == TokenType.NIL || this.NextToken().TokenType == TokenType.VARIABLE 
+                    || this.NextToken().TokenType == TokenType.LEFT_PAREN)
+            {
+                ParseCall();
+            }
         }
 
         private void ParsePrimary()
@@ -410,9 +476,64 @@ namespace ProgrammingLanguage.SyntaxAnalysis
 
         private void ParseCall()
         {
+            ParsePrimary();
 
+            while(Match(TokenType.LEFT_PAREN))
+            {
+                Eat(TokenType.LEFT_PAREN);
+
+                ParseArguments();
+
+                Eat(TokenType.RIGHT_PAREN);
+            }
         }
 
+        #endregion
+
+        #region Function Call Parse
+
+        private void ParseArguments()
+        {
+            ParseExpression();
+
+            while(Match(TokenType.COMMA))
+            {
+                ParseExpression();
+            }
+        }
+
+        private void ParseParameters()
+        {
+            if(Match(TokenType.VARIABLE))
+            {
+                Eat(TokenType.VARIABLE);
+                while(Match(TokenType.COMMA))
+                {
+                    Eat(TokenType.COMMA);
+                    Eat(TokenType.VARIABLE);
+                }
+            }
+        }
+
+        private void ParseFunctionBody()
+        {
+            if(Match(TokenType.LEFT_PAREN))
+            {
+                Eat(TokenType.LEFT_PAREN);
+
+                if(Match(TokenType.VARIABLE))
+                {
+                    ParseParameters();
+
+                    if (Match(TokenType.RIGHT_PAREN))
+                    {
+                        Eat(TokenType.RIGHT_PAREN);
+                    }
+
+                    ParseBlock();
+                }
+            }
+        }
 
         #endregion
 
