@@ -16,7 +16,7 @@ using System.Collections.Generic;
 //block        → "{" declaration* "}" ;              
 //return       → "dön" expression ";"
 
-//assignment  → IDENTIFIER (( "=" ) assignment )? | expression                      
+//assignment  → IDENTIFIER (( "=" ) expression )? | expression                      
 //expression  → logic_or ;                                                          
 //logic_or    → logic_and ( "veya" logic_and )*
 //logic_and   → equality ( "ve" equality )*
@@ -128,7 +128,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis
                 if(Match(TokenType.ASSIGNMENT))
                 {
                     Eat(TokenType.ASSIGNMENT);
-                    ParseAssignment();
+                    ParseExpression();
                 }
             }
             else
@@ -421,7 +421,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis
         {
             if (Match(TokenType.NOT) || Match(TokenType.MINUS))
             {
-
+                Eat(TokenType.MINUS);
                 ParseUnary();
             }
             else if(Match(TokenType.NUMBER) || Match(TokenType.STRING) || Match(TokenType.TRUE_KEYWORD) ||

@@ -9,8 +9,9 @@
 //TODO: negative test cases for parser
 //TODO: some exception handling for parser
 //TODO: add assert section to all parser tests
-//TODO: write test for if, else if, else 
 //TODO: write test that contains, func decleration, if-else, while and variable declaration
+//TODO: implement parse nodes and build tree.
+//TODO: implement evaluator
 
 using ProgrammingLanguage.LexicalAnalysis;
 using ProgrammingLanguage.SyntaxAnalysis;
