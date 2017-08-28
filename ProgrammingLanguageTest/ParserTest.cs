@@ -54,7 +54,7 @@ namespace ProgrammingLanguageTest
             //No Exception occurs
         }
 
-        [TestCase("değişken x = 2 ; oldukça (x < 5) { yazdır x ; x = 6 ; }")] TODO: //x=x+1 error
+        [TestCase("değişken x = 2 ; oldukça (x < 5) { yazdır x ; x = 6 ; }")] //TODO: //x=x+1 error
         public void WhileStatement_Parse_NoException(string input)
         {
             Lexer lexer = new Lexer(input);
