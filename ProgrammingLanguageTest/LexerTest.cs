@@ -126,6 +126,12 @@ namespace ProgrammingLanguageTest
         [TestCase("değişken a = (2);", 7)]
         [TestCase("değişken a = ( 2 ) ;", 7)]
         [TestCase("değişken a = ( 2 );", 7)]
+        [TestCase("değişken sayı1 = 2;", 5)]
+        [TestCase("değişken sayı30 = 2;", 5)]
+        [TestCase("değişken toplam_değeri = 70;", 5)]
+        [TestCase("değişken _ = 70;", 5)]
+        [TestCase("değişken _değer1 = 70;", 5)]
+        [TestCase("değişken toplam_değeri1 = 70;", 5)]
         public void CreateLexer_AnalyzeVariableDecleration_4Tokens(string input, int tokenCount)
         {
             Lexer lexer = new Lexer(input);
@@ -135,3 +141,4 @@ namespace ProgrammingLanguageTest
         }
     }
 }
+

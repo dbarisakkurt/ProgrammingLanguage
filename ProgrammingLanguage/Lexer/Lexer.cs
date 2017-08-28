@@ -169,7 +169,7 @@ namespace ProgrammingLanguage.LexicalAnalysis
                             token = new Token(TokenType.NUMBER, resultNumber);
                             m_TokenList.Add(token);
                         }
-                        else if (char.IsLetter(m_CurrentChar))
+                        else if (char.IsLetter(m_CurrentChar) || m_CurrentChar =='_')
                         {
                             string resultVar = ParseVariable();
                             if (m_Keywords.ContainsKey(resultVar))
@@ -181,16 +181,10 @@ namespace ProgrammingLanguage.LexicalAnalysis
                                 token = new Token(TokenType.VARIABLE, resultVar);
                             }
                             m_TokenList.Add(token);
-                            //Advance();
                         }
-                        //else if(IsAtEnd())
-                        //{
-                        //    token = new Token(TokenType.EOF, null);
-                        //    m_TokenList.Add(token);
-                        //}
                         else
                         {
-                            throw new InvalidOperationException();
+                            throw new InvalidOperationException($"Unrecognized token in lexer. {m_CurrentChar}");
                         }
                         break;
                 }
@@ -231,7 +225,7 @@ namespace ProgrammingLanguage.LexicalAnalysis
         private string ParseVariable()
         {
             int start = m_CurrentPosition;
-            while (char.IsLetterOrDigit(m_CurrentChar))
+            while (char.IsLetterOrDigit(m_CurrentChar) || m_CurrentChar == '_')
             {
                 Advance();
             }

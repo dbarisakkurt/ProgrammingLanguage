@@ -42,6 +42,9 @@ namespace ProgrammingLanguageTest
             //No Exception occurs
         }
 
+        [TestCase("eğer(x==2){yazdır 5;}değilse{yazdır 7;}")]
+        [TestCase("eğer (x==2) { yazdır 5; } değilse { yazdır 7; }")]
+        [TestCase("eğer (x==2) { yazdır 5 ; } değilse { yazdır 7 ; }")]
         [TestCase("eğer ( x == 2 ) { yazdır 5 ; } değilse { yazdır 7 ; }")]
         public void IfStatement_Parse_NoException(string input)
         {
@@ -54,6 +57,10 @@ namespace ProgrammingLanguageTest
             //No Exception occurs
         }
 
+        [TestCase("değişken x=2; oldukça(x<5){yazdır x; x=6;}")]
+        [TestCase("değişken x = 2 ; oldukça (x < 5) { yazdır x; x=6; }")]
+        [TestCase("değişken x = 2 ; oldukça (x<5) { yazdır x ; x = 6 ; }")]
+        [TestCase("değişken x=2 ; oldukça (x < 5) { yazdır x ; x = 6 ; }")]
         [TestCase("değişken x = 2 ; oldukça (x < 5) { yazdır x ; x = 6 ; }")] //TODO: //x=x+1 error
         public void WhileStatement_Parse_NoException(string input)
         {
@@ -66,7 +73,14 @@ namespace ProgrammingLanguageTest
             //No Exception occurs
         }
 
-        [TestCase("fonk topla (x , y) { değişken z = 5 ; dön z ; }")]
+        [TestCase("fonk zdeğer(x,y){değişken z=5; dön z;}")]
+        [TestCase("fonk zdeğer (x , y){değişken z=5; dön z;}")]
+        [TestCase("fonk zdeğer(x,y) { değişken z = 5 ; dön z ; }")]
+        [TestCase("fonk zdeğer (x , y) { değişken z = 5 ; dön z ; }")]
+        [TestCase("fonk topla2sayı (x , y) { değişken z = x + y ; dön z ; }")]
+        [TestCase("fonk topla3sayı (a , b) { değişken z = a+b+c ; dön z; }")]
+        [TestCase("fonk çember_çevresi (yarıçap) { değişken sonuç = 2*3.14*yarıçap ; dön sonuç; }")]
+        [TestCase("fonk daireAlani (yarıçap) { değişken pi = 3.14; değişken sonuç = pi*yarıçap*yarıçap ; dön sonuç; }")]
         public void FunctionDeclaration_Parse_NoException(string input)
         {
             Lexer lexer = new Lexer(input);
@@ -79,4 +93,3 @@ namespace ProgrammingLanguageTest
         }
     }
 }
-
