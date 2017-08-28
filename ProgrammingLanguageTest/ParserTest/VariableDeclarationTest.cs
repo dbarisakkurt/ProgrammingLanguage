@@ -32,6 +32,7 @@ namespace ProgrammingLanguageTest.ParserTest
         [TestCase("değişken c = (doğru veya yanlış) == doğru;")]
         [TestCase("değişken c = doğru veya yanlış == (doğru);")]
         [TestCase("değişken k = z+1;")]
+        [TestCase("değişken k = \"hello\"")]
         public void DeclareVariable_Parse_NoException(string input)
         {
             Lexer lexer = new Lexer(input);

@@ -50,9 +50,6 @@ namespace ProgrammingLanguage.LexicalAnalysis
 
                 switch (m_CurrentChar)
                 {
-                    case ' ':
-                        SkipWhitespace();
-                        break;
                     case ',':
                         token = new Token(TokenType.COMMA, ',');
                         Advance();
@@ -182,9 +179,13 @@ namespace ProgrammingLanguage.LexicalAnalysis
                             }
                             m_TokenList.Add(token);
                         }
+                        else if(char.IsWhiteSpace(m_CurrentChar))
+                        {
+                            SkipWhitespace();
+                        }
                         else
                         {
-                            throw new InvalidOperationException($"Unrecognized token in lexer. {m_CurrentChar}");
+                            throw new LexerException($"Unrecognized token in lexer. {m_CurrentChar}");
                         }
                         break;
                 }
@@ -219,7 +220,17 @@ namespace ProgrammingLanguage.LexicalAnalysis
 
             int end = m_CurrentPosition;
 
-            return m_Input.Substring(start, end-start);
+            string result = m_Input.Substring(start, end-start);
+
+            if (result.StartsWith("0") && result.Length > 1 && result != "0.0")
+            {
+                throw new LexerException("Integers cannot start with 0");
+            }
+            if (result.StartsWith(".") || result.EndsWith("."))
+            {
+                throw new LexerException("Integers cannot start with 0");
+            }
+            return result;
         }
 
         private string ParseVariable()
@@ -240,9 +251,14 @@ namespace ProgrammingLanguage.LexicalAnalysis
             int start = m_CurrentPosition +1;
             Advance();
 
-            while (m_CurrentChar != '"')
+            while (m_CurrentChar != '"' && m_CurrentChar != '\0')
             {
                 Advance();
+            }
+
+            if(m_CurrentChar != '\"')
+            {
+                throw new LexerException("End of string is expected");
             }
 
             Advance();

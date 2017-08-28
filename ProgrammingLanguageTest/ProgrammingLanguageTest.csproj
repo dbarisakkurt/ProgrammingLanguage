@@ -62,11 +62,14 @@
     <Compile Include="LexerTest\AndOrTest.cs" />
     <Compile Include="LexerTest\CommentTest.cs" />
     <Compile Include="LexerTest\EqualityOperatorTest.cs" />
+    <Compile Include="LexerTest\InvalidInputForLexerTest.cs" />
     <Compile Include="LexerTest\OperatorTest.cs" />
     <Compile Include="LexerTest\SingleTokenTest.cs" />
     <Compile Include="LexerTest\VariableDeclarationTest.cs" />
+    <Compile Include="ParserTest\ComplexProgramTest.cs" />
     <Compile Include="ParserTest\FunctionDeclarationTest.cs" />
     <Compile Include="ParserTest\IfStatementTest.cs" />
+    <Compile Include="ParserTest\InvalidInputForParserTest.cs" />
     <Compile Include="ParserTest\PrintStatementTest.cs" />
     <Compile Include="ParserTest\VariableDeclarationTest.cs" />
     <Compile Include="ParserTest\WhileStatementTest.cs" />

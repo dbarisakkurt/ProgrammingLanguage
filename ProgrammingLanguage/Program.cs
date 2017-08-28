@@ -1,15 +1,8 @@
 ﻿
 //TODO LATER: add array type
+//TODO LATER fix the curly brace requirement after değilse keyword.
 
-//TODO: negative test cases for lexer
-//.5
-//5.
-//05
-//05.4
-//TODO: negative test cases for parser
-//TODO: some exception handling for parser
 //TODO: add assert section to all parser tests
-//TODO: write test that contains, func decleration, if-else, while and variable declaration
 //TODO: implement parse nodes and build tree.
 //TODO: implement evaluator
 

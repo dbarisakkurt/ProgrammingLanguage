@@ -192,6 +192,10 @@ namespace ProgrammingLanguage.SyntaxAnalysis
             {
                 ParseReturn();
             }
+            else
+            {
+                throw new ParseException("Statement is expected.");
+            }
         }
 
         private void ParseReturn()
@@ -208,7 +212,6 @@ namespace ProgrammingLanguage.SyntaxAnalysis
             if(Match(TokenType.PRINT_KEYWORD))
             {
                 Eat(TokenType.PRINT_KEYWORD);
-
                 ParseExpression();
             }
         }
@@ -222,6 +225,12 @@ namespace ProgrammingLanguage.SyntaxAnalysis
                 Eat(TokenType.LEFT_PAREN);
                 ParseExpression();
                 Eat(TokenType.RIGHT_PAREN);
+
+                if (!Match(TokenType.LEFT_CURLY_BRACE))
+                {
+                    throw new ParseException("Left curly brace is expected after right paranthesis in if statement");
+                }
+
                 ParseStatement();
             }
         }
@@ -255,10 +264,21 @@ namespace ProgrammingLanguage.SyntaxAnalysis
                 ParseExpression();
                 Eat(TokenType.RIGHT_PAREN);
 
+                if(!Match(TokenType.LEFT_CURLY_BRACE))
+                {
+                    throw new ParseException("Left curly brace is expected after right paranthesis in if statement");
+                }
+
                 ParseStatement();
                 if (Match(TokenType.ELSE_KEYWORD))
                 {
                     Eat(TokenType.ELSE_KEYWORD);
+
+                    if (!Match(TokenType.LEFT_CURLY_BRACE))
+                    {
+                        throw new ParseException("Left curly brace is expected after right paranthesis in if statement");
+                    }
+
                     ParseStatement();
                 }
 
@@ -283,23 +303,6 @@ namespace ProgrammingLanguage.SyntaxAnalysis
         private void ParseExpression()
         {
             ParseLogicOr();
-
-            //if(Match(TokenType.VARIABLE))
-            //{
-            //    Eat(TokenType.VARIABLE);
-
-            //    if(Match(TokenType.ASSIGNMENT))
-            //    {
-            //        Eat(TokenType.ASSIGNMENT);
-
-            //        ParseExpression();
-            //    }
-
-            //}
-            //else
-            //{
-            //    ParseLogicOr();
-            //}
         }
 
         private void ParseLogicOr()
@@ -309,24 +312,19 @@ namespace ProgrammingLanguage.SyntaxAnalysis
             while (Match(TokenType.OR_KEYWORD))
             {
                 Eat(TokenType.OR_KEYWORD);
-
                 ParseLogicAnd();
             }
-
         }
 
         private void ParseLogicAnd()
         {
-
             Equality();
 
             while (Match(TokenType.AND_KEYWORD))
             {
                 Eat(TokenType.AND_KEYWORD);
-
                 Equality();
             }
-
         }
 
         private void Equality()
@@ -424,16 +422,16 @@ namespace ProgrammingLanguage.SyntaxAnalysis
                 Eat(TokenType.MINUS);
                 ParseUnary();
             }
-            else if(Match(TokenType.NUMBER) || Match(TokenType.STRING) || Match(TokenType.TRUE_KEYWORD) ||
+            else if((Match(TokenType.NUMBER) || Match(TokenType.STRING) || Match(TokenType.TRUE_KEYWORD) ||
                 Match(TokenType.FALSE_KEYWORD) || Match(TokenType.NIL) || Match(TokenType.VARIABLE) ||
-                Match(TokenType.LEFT_PAREN))
+                Match(TokenType.LEFT_PAREN)) && NextToken().TokenType != TokenType.LEFT_PAREN)
             {
                 ParsePrimary();
             }
-            else if(this.NextToken().TokenType == TokenType.NUMBER || this.NextToken().TokenType == TokenType.STRING
-                    || this.NextToken().TokenType == TokenType.TRUE_KEYWORD || this.NextToken().TokenType == TokenType.FALSE_KEYWORD
-                    || this.NextToken().TokenType == TokenType.NIL || this.NextToken().TokenType == TokenType.VARIABLE 
-                    || this.NextToken().TokenType == TokenType.LEFT_PAREN)
+            else if(Match(TokenType.NUMBER) || Match(TokenType.STRING)
+                    || Match(TokenType.TRUE_KEYWORD) || Match(TokenType.FALSE_KEYWORD)
+                    || Match(TokenType.NIL) || Match(TokenType.VARIABLE) 
+                    || Match(TokenType.LEFT_PAREN) && NextToken().TokenType != TokenType.LEFT_PAREN)
             {
                 ParseCall();
             }
@@ -471,6 +469,10 @@ namespace ProgrammingLanguage.SyntaxAnalysis
                 ParseExpression();
                 Eat(TokenType.RIGHT_PAREN);
             }
+            else
+            {
+                throw new ParseException("Parse error");
+            }
 
         }
 
@@ -498,6 +500,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis
 
             while(Match(TokenType.COMMA))
             {
+                Eat(TokenType.COMMA);
                 ParseExpression();
             }
         }
