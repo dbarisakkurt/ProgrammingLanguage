@@ -4,7 +4,7 @@ using ProgrammingLanguage.LexicalAnalysis;
 namespace ProgrammingLanguageTest.LexerTest
 {
     [TestFixture]
-    public class SingleTokenTest
+    public class Lexer_SingleTokenTest
     {
         [TestCase("+", TokenType.PLUS)]
         [TestCase(" + ", TokenType.PLUS)]

@@ -4,7 +4,7 @@ using ProgrammingLanguage.LexicalAnalysis;
 namespace ProgrammingLanguageTest.LexerTest
 {
     [TestFixture]
-    public class EqualityOperatorTest
+    public class Lexer_EqualityOperatorTest
     {
         [TestCase("== =")]
         [TestCase("= ==")]

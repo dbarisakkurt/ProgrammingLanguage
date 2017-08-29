@@ -5,7 +5,7 @@ using ProgrammingLanguage.SyntaxAnalysis;
 namespace ProgrammingLanguageTest.ParserTest
 {
     [TestFixture]
-    public class ComplexProgramTest
+    public class Parser_ComplexProgramTest
     {
         [TestCase(@"
 fonk topla(x, y)

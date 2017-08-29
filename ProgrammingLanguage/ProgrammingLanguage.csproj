@@ -43,20 +43,30 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConsoleHelper.cs" />
-    <Compile Include="Lexer\Lexer.cs" />
-    <Compile Include="Lexer\LexerException.cs" />
-    <Compile Include="Lexer\Token.cs" />
-    <Compile Include="Lexer\TokenType.cs" />
-    <Compile Include="Parser\ParseException.cs" />
-    <Compile Include="Parser\Parser.cs" />
+    <Compile Include="Interpreter\Environment.cs" />
+    <Compile Include="Interpreter\Evaluator.cs" />
+    <Compile Include="LexicalAnalysis\Lexer.cs" />
+    <Compile Include="LexicalAnalysis\LexerException.cs" />
+    <Compile Include="LexicalAnalysis\Token.cs" />
+    <Compile Include="LexicalAnalysis\TokenType.cs" />
+    <Compile Include="SyntaxAnalysis\Nodes\AtomicNode.cs" />
+    <Compile Include="SyntaxAnalysis\Nodes\BinaryOperatorNode.cs" />
+    <Compile Include="SyntaxAnalysis\Nodes\IfNode.cs" />
+    <Compile Include="SyntaxAnalysis\Nodes\Node.cs" />
+    <Compile Include="SyntaxAnalysis\Nodes\PrintNode.cs" />
+    <Compile Include="SyntaxAnalysis\Nodes\ProgramNode.cs" />
+    <Compile Include="SyntaxAnalysis\Nodes\ReturnNode.cs" />
+    <Compile Include="SyntaxAnalysis\Nodes\UnaryNode.cs" />
+    <Compile Include="SyntaxAnalysis\Nodes\VariableDeclarationNode.cs" />
+    <Compile Include="SyntaxAnalysis\Nodes\WhileNode.cs" />
+    <Compile Include="SyntaxAnalysis\ParseException.cs" />
+    <Compile Include="SyntaxAnalysis\Parser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Interpreter\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

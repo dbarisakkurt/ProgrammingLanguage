@@ -6,7 +6,7 @@ using ProgrammingLanguage.SyntaxAnalysis;
 namespace ProgrammingLanguageTest.ParserTest
 {
     [TestFixture]
-    class InvalidInputForParserTest
+    class Parser_InvalidInputForParserTest
     {
         [TestCase("eğer x=2;")]
         [TestCase("değilse { while {} yazdır 2;}")]                 

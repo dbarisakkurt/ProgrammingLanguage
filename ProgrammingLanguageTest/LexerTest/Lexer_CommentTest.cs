@@ -4,7 +4,7 @@ using ProgrammingLanguage.LexicalAnalysis;
 namespace ProgrammingLanguageTest.LexerTest
 {
     [TestFixture]
-    public class CommentTest
+    public class Lexer_CommentTest
     {
         [TestCase(@"+ # hello
             - # world *

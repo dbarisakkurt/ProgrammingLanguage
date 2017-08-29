@@ -1,6 +1,7 @@
 ﻿using System;
 using ProgrammingLanguage.LexicalAnalysis;
 using System.Collections.Generic;
+using ProgrammingLanguage.SyntaxAnalysis.Nodes;
 
 //grammar based on https://github.com/fsacer/FailLang by fsacer but simplified
 
@@ -43,8 +44,11 @@ namespace ProgrammingLanguage.SyntaxAnalysis
         private List<Token> m_TokenList;
         private Token m_CurrentToken;
         private int m_TokenIndex;
+        private ProgramNode m_ProgramNode = new ProgramNode();
 
         #endregion
+
+        public ProgramNode ProgramNode { get { return m_ProgramNode; } }
 
         //###################################################################################
         #region Constructor
@@ -119,22 +123,29 @@ namespace ProgrammingLanguage.SyntaxAnalysis
 
         #region Statement Parse Methods
 
-        private void ParseAssignment()
+        private Node ParseAssignment()
         {
+            Node result = null;
+
             if(Match(TokenType.VARIABLE))
             {
+                string variableName = m_CurrentToken.Value.ToString();
                 Eat(TokenType.VARIABLE);
 
                 if(Match(TokenType.ASSIGNMENT))
                 {
                     Eat(TokenType.ASSIGNMENT);
-                    ParseExpression();
+                    Node exprNode = ParseExpression();
+                    result = new VariableDeclarationNode(variableName, m_CurrentToken.Value, exprNode);
                 }
             }
             else
             {
-                ParseExpression();
+                Node exprNode = ParseExpression();
+                result = new VariableDeclarationNode("", m_CurrentToken.Value, exprNode);
             }
+
+            return result;
         }
 
         private void ParseDecleration()
@@ -145,7 +156,8 @@ namespace ProgrammingLanguage.SyntaxAnalysis
             }
             else if(Match(TokenType.VAR_KEYWORD))
             {
-                ParseVariableDecleration();
+                Node node = ParseVariableDecleration();
+                m_ProgramNode.Statements.Add(node);
             }
             else
             {
@@ -153,24 +165,31 @@ namespace ProgrammingLanguage.SyntaxAnalysis
             }
         }
 
-        private void ParseVariableDecleration()
+        private Node ParseVariableDecleration()
         {
+            Node result = null;
             Eat(TokenType.VAR_KEYWORD);
 
+            string variableName = m_CurrentToken.Value.ToString();
+            object value = m_CurrentToken.Value;
             Eat(TokenType.VARIABLE);
 
             if (Match(TokenType.ASSIGNMENT))
             {
                 AdvanceToken();
-                ParseExpression();
+                Node node = ParseExpression();
+                result = new VariableDeclarationNode(variableName, value, node);
             }
+
+            return result;
         }
 
         private void ParseStatement()
         {
             if(Match(TokenType.VARIABLE))
             {
-                ParseExprStatement();
+                Node exprStatement = ParseExprStatement();
+                m_ProgramNode.AddStatement(exprStatement);
             }
             else if(Match(TokenType.IF_KEYWORD))
             {
@@ -178,7 +197,8 @@ namespace ProgrammingLanguage.SyntaxAnalysis
             }
             else if (Match(TokenType.PRINT_KEYWORD))
             {
-                ParsePrintStatement();
+                Node printNode = ParsePrintStatement();
+                m_ProgramNode.AddStatement(printNode);
             }
             else if (Match(TokenType.WHILE_KEYWORD))
             {
@@ -207,13 +227,18 @@ namespace ProgrammingLanguage.SyntaxAnalysis
             }
         }
 
-        private void ParsePrintStatement()
+        private Node ParsePrintStatement()
         {
+            Node result = null;
+
             if(Match(TokenType.PRINT_KEYWORD))
             {
                 Eat(TokenType.PRINT_KEYWORD);
-                ParseExpression();
+                result = ParseExpression();
+                return new PrintNode(result);
             }
+
+            return result;
         }
 
         private void ParseWhileStatement()
@@ -250,9 +275,9 @@ namespace ProgrammingLanguage.SyntaxAnalysis
             }
         }
 
-        private void ParseExprStatement()
+        private Node ParseExprStatement()
         {
-            ParseAssignment();
+            return ParseAssignment();
         }
 
         private void ParseIfStatement()
@@ -300,39 +325,50 @@ namespace ProgrammingLanguage.SyntaxAnalysis
 
         #region Expression Parse Methods
 
-        private void ParseExpression()
+        private Node ParseExpression()
         {
-            ParseLogicOr();
+            return ParseLogicOr();
         }
 
-        private void ParseLogicOr()
+        private Node ParseLogicOr()
         {
-            ParseLogicAnd();
+            Node andNode = ParseLogicAnd();
 
             while (Match(TokenType.OR_KEYWORD))
             {
+                Node operatorNode = new AtomicNode(m_CurrentToken, m_CurrentToken.Value);
                 Eat(TokenType.OR_KEYWORD);
-                ParseLogicAnd();
+                Node rightAndNode = ParseLogicAnd();
+
+                andNode = new BinaryOperatorNode(andNode, operatorNode, rightAndNode);
             }
+            return andNode;
         }
 
-        private void ParseLogicAnd()
+        private Node ParseLogicAnd()
         {
-            Equality();
+            Node equalityNode = Equality();
 
             while (Match(TokenType.AND_KEYWORD))
             {
+                AtomicNode operatorNode = new AtomicNode(m_CurrentToken, m_CurrentToken.Value);
+
                 Eat(TokenType.AND_KEYWORD);
-                Equality();
+                Node rightEqualityNode = Equality();
+                equalityNode = new BinaryOperatorNode(equalityNode, operatorNode, rightEqualityNode);
+
             }
+            return equalityNode;
         }
 
-        private void Equality()
+        private Node Equality()
         {
-            ParseComparison();
+            Node comparisonNode = ParseComparison();
 
             while (Match(TokenType.EQUAL) || Match(TokenType.NOT_EQUAL))
             {
+                Node operatorNode = new AtomicNode(m_CurrentToken, m_CurrentToken.Value);
+
                 if(Match(TokenType.EQUAL))
                 {
                     Eat(TokenType.EQUAL);
@@ -342,17 +378,20 @@ namespace ProgrammingLanguage.SyntaxAnalysis
                     Eat(TokenType.NOT_EQUAL);
                 }
 
-                ParseComparison();
+                Node rightComparisonNode = ParseComparison();
+                comparisonNode = new BinaryOperatorNode(comparisonNode, operatorNode, rightComparisonNode);
             }
+            return comparisonNode;
         }
         
-        private void ParseComparison()
+        private Node ParseComparison()
         {
-            ParseTerm();
+            Node termNode = ParseTerm();
 
             while (Match(TokenType.GREATER_THAN) || Match(TokenType.GREATER_THAN_OR_EQUAL)
                 || Match(TokenType.LESS_THAN) || Match(TokenType.LESS_THAN_OR_EQUAL))
             {
+                Node operatorNode = new AtomicNode(m_CurrentToken, m_CurrentToken.Value);
                 if (Match(TokenType.GREATER_THAN))
                 {
                     Eat(TokenType.GREATER_THAN);
@@ -370,17 +409,19 @@ namespace ProgrammingLanguage.SyntaxAnalysis
                     Eat(TokenType.LESS_THAN_OR_EQUAL);
                 }
 
-                ParseTerm();
+                Node rightTermNode = ParseTerm();
+                termNode = new BinaryOperatorNode(termNode, operatorNode, rightTermNode);
             }
-
+            return termNode;
         }
 
-        private void ParseTerm()
+        private Node ParseTerm()
         {
-            ParseFactor();
+            Node factorNode = ParseFactor();
 
             while (Match(TokenType.MINUS) || Match(TokenType.PLUS))
             {
+                Node operatorNode = new AtomicNode(m_CurrentToken, m_CurrentToken.Value);
                 if (Match(TokenType.MINUS))
                 {
                     Eat(TokenType.MINUS);
@@ -390,17 +431,20 @@ namespace ProgrammingLanguage.SyntaxAnalysis
                     Eat(TokenType.PLUS);
                 }
 
-                ParseFactor();
+                Node rightFactorNode = ParseFactor();
+                factorNode = new BinaryOperatorNode(factorNode, operatorNode, rightFactorNode);
             }
 
+            return factorNode;
         }
 
-        private void ParseFactor()
+        private Node ParseFactor()
         {
-            ParseUnary();
+            Node unaryNode = ParseUnary();
 
             while (Match(TokenType.DIVIDE) || Match(TokenType.MULTIPLY))
             {
+                Node operatorNode = new AtomicNode(m_CurrentToken, m_CurrentToken.Value);
                 if (Match(TokenType.DIVIDE))
                 {
                     Eat(TokenType.DIVIDE);
@@ -410,73 +454,103 @@ namespace ProgrammingLanguage.SyntaxAnalysis
                     Eat(TokenType.MULTIPLY);
                 }
 
-                ParseUnary();
+                Node rightUnaryNode = ParseUnary();
+                unaryNode = new BinaryOperatorNode(unaryNode, operatorNode, rightUnaryNode);
             }
 
+            return unaryNode;
         }
 
-        private void ParseUnary()
+        private Node ParseUnary()
         {
+            Node node = null;
+
             if (Match(TokenType.NOT) || Match(TokenType.MINUS))
             {
-                Eat(TokenType.MINUS);
-                ParseUnary();
+                Node prefixOpNode = new AtomicNode(m_CurrentToken, m_CurrentToken.Value);
+                if (Match(TokenType.NOT))
+                {
+                    Eat(TokenType.NOT);
+                }
+                if(Match(TokenType.MINUS))
+                {
+                    Eat(TokenType.MINUS);
+                }
+                
+                Node tempNode = ParseUnary();
+                node = new UnaryNode(prefixOpNode, tempNode);
             }
             else if((Match(TokenType.NUMBER) || Match(TokenType.STRING) || Match(TokenType.TRUE_KEYWORD) ||
                 Match(TokenType.FALSE_KEYWORD) || Match(TokenType.NIL) || Match(TokenType.VARIABLE) ||
                 Match(TokenType.LEFT_PAREN)) && NextToken().TokenType != TokenType.LEFT_PAREN)
             {
-                ParsePrimary();
+                node = ParsePrimary();
             }
             else if(Match(TokenType.NUMBER) || Match(TokenType.STRING)
                     || Match(TokenType.TRUE_KEYWORD) || Match(TokenType.FALSE_KEYWORD)
                     || Match(TokenType.NIL) || Match(TokenType.VARIABLE) 
                     || Match(TokenType.LEFT_PAREN) && NextToken().TokenType != TokenType.LEFT_PAREN)
             {
-                ParseCall();
+                Node tempNode = ParseCall();
+                node = new UnaryNode(null, tempNode);  //TODO think about first parameter
             }
+            return node;
         }
 
-        private void ParsePrimary()
+        private Node ParsePrimary()
         {
+            Node node;
             if(Match(TokenType.NUMBER))
             {
+                node = new AtomicNode(m_CurrentToken, m_CurrentToken.Value);
                 Eat(TokenType.NUMBER);
+                
             }
             else if (Match(TokenType.STRING))
             {
+                node = new AtomicNode(m_CurrentToken, m_CurrentToken.Value);
                 Eat(TokenType.STRING);
+                
             }
             else if (Match(TokenType.TRUE_KEYWORD))
             {
+                node = new AtomicNode(m_CurrentToken, true);
                 Eat(TokenType.TRUE_KEYWORD);
+                
             }
             else if (Match(TokenType.FALSE_KEYWORD))
             {
+                node = new AtomicNode(m_CurrentToken, false);
                 Eat(TokenType.FALSE_KEYWORD);
+                
             }
             else if (Match(TokenType.NIL))
             {
+                node = new AtomicNode(m_CurrentToken, m_CurrentToken.Value);
                 Eat(TokenType.NIL);
+                
             }
             else if (Match(TokenType.VARIABLE))
             {
+                node = new AtomicNode(m_CurrentToken, m_CurrentToken.Value);
                 Eat(TokenType.VARIABLE);
+                
             }
             else if (Match(TokenType.LEFT_PAREN))
             {
                 Eat(TokenType.LEFT_PAREN);
-                ParseExpression();
+                node = ParseExpression();
                 Eat(TokenType.RIGHT_PAREN);
             }
             else
             {
                 throw new ParseException("Parse error");
             }
+            return node;
 
         }
 
-        private void ParseCall()
+        private Node ParseCall()
         {
             ParsePrimary();
 
@@ -488,6 +562,8 @@ namespace ProgrammingLanguage.SyntaxAnalysis
 
                 Eat(TokenType.RIGHT_PAREN);
             }
+
+            return null;
         }
 
         #endregion

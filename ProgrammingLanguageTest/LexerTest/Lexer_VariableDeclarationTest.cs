@@ -4,7 +4,7 @@ using ProgrammingLanguage.LexicalAnalysis;
 namespace ProgrammingLanguageTest.LexerTest
 {
     [TestFixture]
-    public class VariableDeclarationTest
+    public class Lexer_VariableDeclarationTest
     {
         [TestCase("değişken hhhhhhh = 5 <= 6 ve 7 >= 5;", 11)]
         [TestCase("değişken eeee = yanlış ve doğru;", 7)]

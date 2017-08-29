@@ -5,7 +5,7 @@ using ProgrammingLanguage.SyntaxAnalysis;
 namespace ProgrammingLanguageTest.ParserTest
 {
     [TestFixture]
-    public class IfStatementTest
+    public class Parser_IfStatementTest
     {
         [TestCase("eğer(x==2){yazdır 5;}değilse{yazdır 7;}")]
         [TestCase("eğer (x==2) { yazdır 5; } değilse { yazdır 7; }")]

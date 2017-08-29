@@ -5,7 +5,7 @@ using ProgrammingLanguage.SyntaxAnalysis;
 namespace ProgrammingLanguageTest.ParserTest
 {
     [TestFixture]
-    public class PrintStatementTest
+    public class Parser_PrintStatementTest
     {
         [TestCase("yazdır x;")]
         [TestCase("yazdır 55;")]

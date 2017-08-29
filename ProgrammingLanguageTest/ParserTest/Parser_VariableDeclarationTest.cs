@@ -5,7 +5,7 @@ using ProgrammingLanguage.SyntaxAnalysis;
 namespace ProgrammingLanguageTest.ParserTest
 {
     [TestFixture]
-    public class VariableDeclarationTest
+    public class Parser_VariableDeclarationTest
     {
         [TestCase("değişken x = 2;")]
         [TestCase("değişken xx = 2;")]

@@ -4,7 +4,7 @@ using ProgrammingLanguage.LexicalAnalysis;
 namespace ProgrammingLanguageTest.LexerTest
 {
     [TestFixture]
-    public class InvalidInputForLexerTest
+    public class Lexer_InvalidInputForLexerTest
     {
         [TestCase("'")]
         [TestCase("\\")]

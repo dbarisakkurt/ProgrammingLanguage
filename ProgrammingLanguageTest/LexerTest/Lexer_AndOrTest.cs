@@ -4,7 +4,7 @@ using ProgrammingLanguage.LexicalAnalysis;
 namespace ProgrammingLanguageTest.LexerTest
 {
     [TestFixture]
-    public class AndOrTest
+    public class Lexer_AndOrTest
     {
         [TestCase("ve veya")]
         [TestCase("veya ve")]

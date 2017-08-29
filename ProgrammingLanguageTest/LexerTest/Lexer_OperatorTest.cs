@@ -4,7 +4,7 @@ using ProgrammingLanguage.LexicalAnalysis;
 namespace ProgrammingLanguageTest.LexerTest
 {
     [TestFixture]
-    public class OperatorTest
+    public class Lexer_OperatorTest
     {
         [TestCase("+ - * /")]
         public void CreateLexer_AnalyzeInputLexically_Successful(string input)
