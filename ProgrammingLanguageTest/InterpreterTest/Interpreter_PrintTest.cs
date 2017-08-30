@@ -15,7 +15,7 @@ namespace ProgrammingLanguageTest.InterpreterTest
         [TestCase("yazdır 6;", "6")]
         [TestCase("yazdır doğru;", "doğru")]
         [TestCase("yazdır \"house\";", "house")]
-        public void Test1(string input, string result)
+        public void Print_Interpret_Successfull(string input, string result)
         {
             Lexer lexer = new Lexer(input);
             lexer.Lex();

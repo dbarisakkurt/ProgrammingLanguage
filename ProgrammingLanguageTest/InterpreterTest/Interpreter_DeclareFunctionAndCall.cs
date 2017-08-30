@@ -1,15 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using NUnit.Framework;
 using ProgrammingLanguage.Interpreter;
 using ProgrammingLanguage.LexicalAnalysis;
 using ProgrammingLanguage.SyntaxAnalysis;
-using System.IO;
-using System;
 
 namespace ProgrammingLanguageTest.InterpreterTest
 {
     [TestFixture]
-    public class Interpreter_WhileStatementTest
+    public class Interpreter_DeclareFunctionAndCall
     {
         //###################################################################################
         #region Setup/TearDown
@@ -27,16 +27,14 @@ namespace ProgrammingLanguageTest.InterpreterTest
         //###################################################################################
         #region Tests
 
-        [TestCase(@" değişken x = 0;
-oldukça(x < 5) { yazdır x; x = x + 1; }", "0\r\n1\r\n2\r\n3\r\n4")]
-        public void WhileStatement_Interpret_Successfull(string input, string result)
+        [TestCase("değişken x = 3; değişken y = 4; fonk topla (a, b) { değişken z = a + b; dön z;} yazdır topla(3, 4);", "7")]
+        public void Function_Interpret_Successfull(string input, string result)
         {
             Lexer lexer = new Lexer(input);
             lexer.Lex();
 
             Parser parser = new Parser(lexer.TokenList);
             parser.ParseProgram();
-
             var out1 = Console.Out;
 
             using (StringWriter sw = new StringWriter())
@@ -49,10 +47,8 @@ oldukça(x < 5) { yazdır x; x = x + 1; }", "0\r\n1\r\n2\r\n3\r\n4")]
                 Assert.AreEqual(result, sw.ToString().Trim());
             }
             Console.SetOut(out1);
-
-
         }
 
-         #endregion
+        #endregion
     }
 }

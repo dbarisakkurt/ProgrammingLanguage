@@ -4,15 +4,8 @@
 //TODO LATER: enable float numbers
 
 
-//TODO: disable float numbers
-//TODO: refactor Evaluator
-//TODO: if(x>2) calismiyor.
-
 //TODO: add assert section to all parser tests
-//TODO return ifadesi
-//TODO: eğer-değilse
-//TODO: oldukça
-//TODO fonksiyon çağırma
+//TODO function call: nested symbol table
 
 using ProgrammingLanguage.Interpreter;
 using ProgrammingLanguage.LexicalAnalysis;

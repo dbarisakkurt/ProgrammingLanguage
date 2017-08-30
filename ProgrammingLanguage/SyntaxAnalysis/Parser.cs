@@ -212,7 +212,8 @@ namespace ProgrammingLanguage.SyntaxAnalysis
             }
             else if (Match(TokenType.RETURN_KEYWORD))
             {
-                ParseReturn();
+                Node returnValNode = ParseReturn();
+                nodeList.AddStatement(returnValNode);
             }
             else
             {
@@ -220,13 +221,15 @@ namespace ProgrammingLanguage.SyntaxAnalysis
             }
         }
 
-        private void ParseReturn()
+        private Node ParseReturn()
         {
+            Node returnValNode = null;
             if(Match(TokenType.RETURN_KEYWORD))
             {
                 Eat(TokenType.RETURN_KEYWORD);
-                ParseExpression();
+                returnValNode = ParseExpression();
             }
+            return returnValNode;
         }
 
         private Node ParsePrintStatement()

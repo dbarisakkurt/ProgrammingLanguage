@@ -59,6 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InterpreterTest\Interpreter_DeclareFunctionAndCall.cs" />
     <Compile Include="InterpreterTest\Interpreter_DeclareVariablePrintIt.cs" />
     <Compile Include="InterpreterTest\Interpreter_IfStatementTest.cs" />
     <Compile Include="InterpreterTest\Interpreter_PrintTest.cs" />

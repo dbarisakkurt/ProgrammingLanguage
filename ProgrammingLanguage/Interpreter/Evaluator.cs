@@ -195,9 +195,7 @@ namespace ProgrammingLanguage.Interpreter
                     {
                         Evaluate(n);
                     }
-                }
-                
-                //todo
+                }               
             }
 
             return null;
