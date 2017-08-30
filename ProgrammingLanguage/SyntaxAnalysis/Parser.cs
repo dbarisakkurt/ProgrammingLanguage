@@ -161,7 +161,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis
             }
             else
             {
-                ParseStatement();
+                ParseStatement(m_ProgramNode);
             }
         }
 
@@ -184,25 +184,27 @@ namespace ProgrammingLanguage.SyntaxAnalysis
             return result;
         }
 
-        private void ParseStatement()
+        private void ParseStatement(INodeList nodeList)
         {
             if(Match(TokenType.VARIABLE))
             {
                 Node exprStatement = ParseExprStatement();
-                m_ProgramNode.AddStatement(exprStatement);
+                nodeList.AddStatement(exprStatement);
             }
             else if(Match(TokenType.IF_KEYWORD))
             {
-                ParseIfStatement();
+                Node ifStatement = ParseIfStatement();
+                nodeList.AddStatement(ifStatement);
             }
             else if (Match(TokenType.PRINT_KEYWORD))
             {
                 Node printNode = ParsePrintStatement();
-                m_ProgramNode.AddStatement(printNode);
+                nodeList.AddStatement(printNode);
             }
             else if (Match(TokenType.WHILE_KEYWORD))
             {
-                ParseWhileStatement();
+                Node whileStatement = ParseWhileStatement();
+                nodeList.AddStatement(whileStatement);
             }
             else if (Match(TokenType.LEFT_CURLY_BRACE))
             {
@@ -241,23 +243,35 @@ namespace ProgrammingLanguage.SyntaxAnalysis
             return result;
         }
 
-        private void ParseWhileStatement()
+        private Node ParseWhileStatement()
         {
+            List<Node> block = new List<Node>();
+            INodeList node = null;
+            Node whileNode = null;
+            Node condition = null;
+
             if (Match(TokenType.WHILE_KEYWORD))
             {
+                whileNode = new AtomicNode(m_CurrentToken, m_CurrentToken.Value);
+
                 Eat(TokenType.WHILE_KEYWORD);
 
                 Eat(TokenType.LEFT_PAREN);
-                ParseExpression();
+                condition = ParseExpression();
                 Eat(TokenType.RIGHT_PAREN);
 
                 if (!Match(TokenType.LEFT_CURLY_BRACE))
                 {
                     throw new ParseException("Left curly brace is expected after right paranthesis in if statement");
                 }
+                node = new WhileNode(whileNode, condition, block);
 
-                ParseStatement();
+                ParseStatement(node);
             }
+
+            
+
+            return (Node)node;
         }
 
         private void ParseBlock()
@@ -280,13 +294,21 @@ namespace ProgrammingLanguage.SyntaxAnalysis
             return ParseAssignment();
         }
 
-        private void ParseIfStatement()
+        private Node ParseIfStatement()
         {
+            List<Node> ifStatementBlock = new List<Node>();
+            List<Node> elseStatementBlock = new List<Node>();
+            INodeList node = null;
+            Node ifToken = null;
+            Node expr = null;
+
             if (Match(TokenType.IF_KEYWORD))
             {
+                ifToken = new AtomicNode(m_CurrentToken, m_CurrentToken.Value);
+
                 Eat(TokenType.IF_KEYWORD);
                 Eat(TokenType.LEFT_PAREN);
-                ParseExpression();
+                expr = ParseExpression();
                 Eat(TokenType.RIGHT_PAREN);
 
                 if(!Match(TokenType.LEFT_CURLY_BRACE))
@@ -294,7 +316,9 @@ namespace ProgrammingLanguage.SyntaxAnalysis
                     throw new ParseException("Left curly brace is expected after right paranthesis in if statement");
                 }
 
-                ParseStatement();
+                node = new IfNode(ifToken, expr, ifStatementBlock, elseStatementBlock);
+
+                ParseStatement(node);
                 if (Match(TokenType.ELSE_KEYWORD))
                 {
                     Eat(TokenType.ELSE_KEYWORD);
@@ -304,10 +328,14 @@ namespace ProgrammingLanguage.SyntaxAnalysis
                         throw new ParseException("Left curly brace is expected after right paranthesis in if statement");
                     }
 
-                    ParseStatement();
+                    ParseStatement(node);
                 }
 
             }
+
+            
+
+            return (Node)node;
 
         }
 

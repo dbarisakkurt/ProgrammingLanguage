@@ -2,7 +2,10 @@
 //TODO LATER: add array type
 //TODO LATER fix the curly brace requirement after değilse keyword.
 
+//TODO: if veya else bloklarina ekleme yapmiyor.
+//TODO: if(x>2) calismiyor.
 //TODO: add assert section to all parser tests
+//TODO return ifadesi
 //TODO: eğer-değilse
 //TODO: oldukça
 //TODO: fonksiyon tanımlama
@@ -20,7 +23,16 @@ namespace ProgrammingLanguage
         {
             string input = @"
 değişken x = 4+5;
-yazdır x;
+değişken a =1;
+değişken b=-1;
+eğer( 9 > 5)
+{
+    yazdır a;
+}
+değilse
+{
+    yazdır b;
+}
 ";
             Lexer lexer = new Lexer(input);
             lexer.Lex();

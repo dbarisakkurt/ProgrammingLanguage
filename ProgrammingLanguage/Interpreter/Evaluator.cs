@@ -44,20 +44,28 @@ namespace ProgrammingLanguage.Interpreter
             }
             else if (node is PrintNode)      //returns null
             {
+                object printResult;
                 Node toBePrinted = ((PrintNode)node).ToBePrinted;
                 var value = ((AtomicNode)toBePrinted).Value;
-                object result = Environment.Get((string)value);
-
-                if(result is bool && (bool)result == true)
+                if(((AtomicNode)toBePrinted).Token.TokenType == TokenType.VARIABLE)
                 {
-                    result = "doğru";
+                    printResult = Environment.Get(value.ToString());
                 }
-                else if (result is bool && (bool)result == false)
+                else
                 {
-                    result = "yanlış";
+                    printResult = value;
                 }
 
-                string resultText = string.Format(CultureInfo.InvariantCulture, result.ToString());
+                if(printResult is bool && (bool)printResult == true)
+                {
+                    printResult = "doğru";
+                }
+                else if (printResult is bool && (bool)printResult == false)
+                {
+                    printResult = "yanlış";
+                }
+
+                string resultText = string.Format(CultureInfo.InvariantCulture, printResult.ToString());
                 Console.WriteLine(resultText);
                 return resultText;  //temporarily return print value for testing
             }
@@ -128,7 +136,6 @@ namespace ProgrammingLanguage.Interpreter
                 {
                     throw new InvalidOperationException("Invalid token scan during evaluation");
                 }
-                //add other operators
 
             }
             else if (node is UnaryNode)
@@ -145,10 +152,43 @@ namespace ProgrammingLanguage.Interpreter
                 }
                 else if (((AtomicNode)prefix).Token.TokenType == TokenType.MINUS)
                 {
-                    int val = (int)r;
+                    int val = Int32.Parse(r.ToString());
                     return -val;
                 }
             }
+            else if(node is IfNode)
+            {
+                Node ifNode = ((IfNode)node).IfNodeProperty;
+                Node condition = ((IfNode)node).Condition;
+                List<Node> ifBlock = ((IfNode)node).Statements;
+                List<Node> elseBlock = ((IfNode)node).ElseBlock;
+
+                object res = Evaluate(condition);
+                if(res is bool && (bool)res == true)
+                {
+                    foreach(Node n in ifBlock)
+                    {
+                        Evaluate(n);
+                    }
+                    
+                }
+                else
+                {
+                    foreach (Node n in elseBlock)
+                    {
+                        Evaluate(n);
+                    }
+                }
+
+            }
+            else if(node is WhileNode)
+            {
+                Node ifNode = ((WhileNode)node).WhileNodeProperty;
+                Node condition = ((WhileNode)node).Condition;
+                List<Node> whileBlock = ((WhileNode)node).Statements;
+                //todo
+            }
+
             return null;
         }
 
