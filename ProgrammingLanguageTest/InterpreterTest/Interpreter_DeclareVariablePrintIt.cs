@@ -18,10 +18,11 @@ namespace ProgrammingLanguageTest.InterpreterTest
         [TestCase("değişken x = 2; yazdır x;", "2")]
         [TestCase("değişken x = 3 * 2; yazdır x;", "6")]
         [TestCase("değişken x = 10 * 55; yazdır x;", "550")]
-        //3 addition
-        //minus
-        //division
-        //paranthesis
+        [TestCase("değişken x = 5-3; yazdır x;", "2")]
+        [TestCase("değişken x = 3-5; yazdır x;", "-2")]
+        [TestCase("değişken x = 9/3; yazdır x;", "3")]
+        [TestCase("değişken x = 2 + 4 * 5; yazdır x;", "22")]
+        [TestCase("değişken x = (2 + 4) * 5; yazdır x;", "30")]
         public void DeclareIntegerNumber_PrintIt_InterpretsCorrectValue(string input, string result)
         {
             Lexer lexer = new Lexer(input);
@@ -41,10 +42,12 @@ namespace ProgrammingLanguageTest.InterpreterTest
         [TestCase("değişken x = 2.6; yazdır x;", "2.6")]
         [TestCase("değişken x = 3.1 * 2; yazdır x;", "6,2")]
         [TestCase("değişken x = 10 * 55.1; yazdır x;", "551")]
-        //3 addition
-        //minus
-        //division
-        //paranthesis
+        [TestCase("değişken x = 2.2 + 3.3 + 1.1; yazdır x;", "6,6")]
+        [TestCase("değişken x = 2.2 - 3.3; yazdır x;", "-1,1")]
+        [TestCase("değişken x = 3.3 - 2.2; yazdır x;", "1,1")]
+        [TestCase("değişken x = 1.9 + 3.1 * 5; yazdır x;", "17.4")]
+        [TestCase("değişken x = (1.9 + 4.1) * 5; yazdır x;", "30")]
+        [TestCase("değişken x = 9.3/3.1; yazdır x;", "3")]
         public void DeclareFloatNumber_PrintIt_InterpretsCorrectValue(string input, string result)
         {
             Lexer lexer = new Lexer(input);

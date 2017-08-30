@@ -76,7 +76,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis
         {
             while(!Match(TokenType.EOF))
             {
-                ParseDecleration();
+                ParseDecleration(m_ProgramNode);
             }
         }
 
@@ -148,7 +148,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis
             return result;
         }
 
-        private void ParseDecleration()
+        private void ParseDecleration(INodeList nodeList, bool elseCall = false)
         {
             if(Match(TokenType.FUN_KEYWORD))
             {
@@ -161,7 +161,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis
             }
             else
             {
-                ParseStatement(m_ProgramNode);
+                ParseStatement(nodeList, elseCall);
             }
         }
 
@@ -184,31 +184,31 @@ namespace ProgrammingLanguage.SyntaxAnalysis
             return result;
         }
 
-        private void ParseStatement(INodeList nodeList)
+        private void ParseStatement(INodeList nodeList, bool elseCall = false)
         {
             if(Match(TokenType.VARIABLE))
             {
                 Node exprStatement = ParseExprStatement();
-                nodeList.AddStatement(exprStatement);
+                nodeList.AddStatement(exprStatement, elseCall);
             }
             else if(Match(TokenType.IF_KEYWORD))
             {
                 Node ifStatement = ParseIfStatement();
-                nodeList.AddStatement(ifStatement);
+                nodeList.AddStatement(ifStatement, elseCall);
             }
             else if (Match(TokenType.PRINT_KEYWORD))
             {
                 Node printNode = ParsePrintStatement();
-                nodeList.AddStatement(printNode);
+                nodeList.AddStatement(printNode, elseCall);
             }
             else if (Match(TokenType.WHILE_KEYWORD))
             {
                 Node whileStatement = ParseWhileStatement();
-                nodeList.AddStatement(whileStatement);
+                nodeList.AddStatement(whileStatement, elseCall);
             }
             else if (Match(TokenType.LEFT_CURLY_BRACE))
             {
-                ParseBlock();
+                ParseBlock(nodeList, elseCall);
             }
             else if (Match(TokenType.RETURN_KEYWORD))
             {
@@ -274,7 +274,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis
             return (Node)node;
         }
 
-        private void ParseBlock()
+        private void ParseBlock(INodeList nodeList, bool elseCall = false)
         {
             if (Match(TokenType.LEFT_CURLY_BRACE))
             {
@@ -282,7 +282,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis
 
                 while(!Match(TokenType.RIGHT_CURLY_BRACE))
                 {
-                    ParseDecleration();
+                    ParseDecleration(nodeList, elseCall);
                 }
 
                 Eat(TokenType.RIGHT_CURLY_BRACE);
@@ -328,7 +328,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis
                         throw new ParseException("Left curly brace is expected after right paranthesis in if statement");
                     }
 
-                    ParseStatement(node);
+                    ParseStatement(node, true);
                 }
 
             }
@@ -624,6 +624,8 @@ namespace ProgrammingLanguage.SyntaxAnalysis
 
         private void ParseFunctionBody()
         {
+            INodeList funcBlock = new FunctionBlock();
+
             if(Match(TokenType.LEFT_PAREN))
             {
                 Eat(TokenType.LEFT_PAREN);
@@ -637,7 +639,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis
                         Eat(TokenType.RIGHT_PAREN);
                     }
 
-                    ParseBlock();
+                    ParseBlock(funcBlock);
                 }
             }
         }

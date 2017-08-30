@@ -13,6 +13,6 @@ namespace ProgrammingLanguage.SyntaxAnalysis.Nodes
             get; set;
         }
 
-        void AddStatement(Node statementNode);
+        void AddStatement(Node statementNode, bool elseCall = false);
     }
 }

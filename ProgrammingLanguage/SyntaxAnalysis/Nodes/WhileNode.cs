@@ -38,7 +38,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis.Nodes
             }
         }
 
-        public void AddStatement(Node statementNode)
+        public void AddStatement(Node statementNode, bool elseCall)
         {
             m_Statements.Add(statementNode);
         }

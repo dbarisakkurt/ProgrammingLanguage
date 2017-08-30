@@ -183,9 +183,18 @@ namespace ProgrammingLanguage.Interpreter
             }
             else if(node is WhileNode)
             {
-                Node ifNode = ((WhileNode)node).WhileNodeProperty;
+                Node whileNode = ((WhileNode)node).WhileNodeProperty;
                 Node condition = ((WhileNode)node).Condition;
                 List<Node> whileBlock = ((WhileNode)node).Statements;
+
+                if (Evaluate(condition) is bool && (bool)Evaluate(condition) == true)
+                {
+                    foreach(Node n in whileBlock)
+                    {
+                        Evaluate(n);
+                    }
+                }
+                
                 //todo
             }
 

@@ -2,8 +2,13 @@
 //TODO LATER: add array type
 //TODO LATER fix the curly brace requirement after değilse keyword.
 
-//TODO: if veya else bloklarina ekleme yapmiyor.
+
+//TODO: scan all files and format them.
+//TODO: add remaining if tests
+//TODO: add remaining while tests
+//TODO: refactor Evaluator
 //TODO: if(x>2) calismiyor.
+
 //TODO: add assert section to all parser tests
 //TODO return ifadesi
 //TODO: eğer-değilse
@@ -22,16 +27,11 @@ namespace ProgrammingLanguage
         static void Main(string[] args)
         {
             string input = @"
-değişken x = 4+5;
-değişken a =1;
-değişken b=-1;
-eğer( 9 > 5)
+değişken x = 0;
+oldukça( x < 5)
 {
-    yazdır a;
-}
-değilse
-{
-    yazdır b;
+    yazdır x;
+    x = x + 1;
 }
 ";
             Lexer lexer = new Lexer(input);

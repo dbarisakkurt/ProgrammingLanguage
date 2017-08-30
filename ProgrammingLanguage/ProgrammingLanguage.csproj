@@ -51,6 +51,7 @@
     <Compile Include="LexicalAnalysis\TokenType.cs" />
     <Compile Include="SyntaxAnalysis\Nodes\AtomicNode.cs" />
     <Compile Include="SyntaxAnalysis\Nodes\BinaryOperatorNode.cs" />
+    <Compile Include="SyntaxAnalysis\Nodes\FunctionBlock.cs" />
     <Compile Include="SyntaxAnalysis\Nodes\IfNode.cs" />
     <Compile Include="SyntaxAnalysis\Nodes\INodeList.cs" />
     <Compile Include="SyntaxAnalysis\Nodes\Node.cs" />
