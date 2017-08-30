@@ -1,13 +1,16 @@
 ﻿using System;
-using ProgrammingLanguage.SyntaxAnalysis.Nodes;
 using System.Collections.Generic;
-using ProgrammingLanguage.LexicalAnalysis;
 using System.Globalization;
+using ProgrammingLanguage.SyntaxAnalysis.Nodes;
+using ProgrammingLanguage.LexicalAnalysis;
 
 namespace ProgrammingLanguage.Interpreter
 {
     internal class Evaluator
     {
+        //###################################################################################
+        #region Internal Methods
+
         internal List<object> Eval(ProgramNode programNode)
         {
             List<object> values = new List<object>();
@@ -24,6 +27,11 @@ namespace ProgrammingLanguage.Interpreter
 
             return values;
         }
+
+        #endregion
+
+        //###################################################################################
+        #region Private Methods
 
         private object Evaluate(Node node)
         {
@@ -80,25 +88,21 @@ namespace ProgrammingLanguage.Interpreter
                 Node right = ((BinaryOperatorNode)node).Right;
                 object rightVal = Evaluate(right);
 
-                if (operatorToken.TokenType == TokenType.PLUS)
+                if (operatorToken.TokenType == TokenType.PLUS) //int or variable
                 {
-                    return Double.Parse( leftVal.ToString(), CultureInfo.InvariantCulture
-                        ) + Double.Parse(rightVal.ToString(), CultureInfo.InvariantCulture);
+                    return Operate(left, right, leftVal, rightVal, (a, b) => a + b);
                 }
                 else if (operatorToken.TokenType == TokenType.MINUS)
                 {
-                    return Double.Parse(leftVal.ToString(), CultureInfo.InvariantCulture
-                        ) - Double.Parse(rightVal.ToString(), CultureInfo.InvariantCulture);
+                    return Operate(left, right, leftVal, rightVal, (a, b) => a - b);
                 }
                 else if (operatorToken.TokenType == TokenType.MULTIPLY)
                 {
-                    return Double.Parse(leftVal.ToString(), CultureInfo.InvariantCulture
-                        ) * Double.Parse(rightVal.ToString(), CultureInfo.InvariantCulture);
+                    return Operate(left, right, leftVal, rightVal, (a, b) => a * b);
                 }
                 else if (operatorToken.TokenType == TokenType.DIVIDE)
                 {
-                    return Double.Parse(leftVal.ToString(), CultureInfo.InvariantCulture
-                        ) / Double.Parse(rightVal.ToString(), CultureInfo.InvariantCulture);
+                    return Operate(left, right, leftVal, rightVal, (a, b) => a / b);
                 }
                 else if (operatorToken.TokenType == TokenType.AND_KEYWORD)
                 {
@@ -110,27 +114,27 @@ namespace ProgrammingLanguage.Interpreter
                 }
                 else if (operatorToken.TokenType == TokenType.GREATER_THAN)
                 {
-                    return Int32.Parse(leftVal.ToString()) > Int32.Parse(rightVal.ToString());
+                    return Compare(left, right, leftVal, rightVal, (a, b) => a > b);
                 }
                 else if (operatorToken.TokenType == TokenType.GREATER_THAN_OR_EQUAL)
                 {
-                    return Int32.Parse(leftVal.ToString()) >= Int32.Parse(rightVal.ToString());
+                    return Compare(left, right, leftVal, rightVal, (a, b) => a >= b);
                 }
                 else if (operatorToken.TokenType == TokenType.LESS_THAN)
                 {
-                    return Int32.Parse(leftVal.ToString()) < Int32.Parse(rightVal.ToString());
+                    return Compare(left, right, leftVal, rightVal, (a, b) => a < b);
                 }
                 else if (operatorToken.TokenType == TokenType.LESS_THAN_OR_EQUAL)
                 {
-                    return Int32.Parse(leftVal.ToString()) <= Int32.Parse(rightVal.ToString());
+                    return Compare(left, right, leftVal, rightVal, (a, b) => a <= b);
                 }
                 else if (operatorToken.TokenType == TokenType.EQUAL)
                 {
-                    return object.Equals(leftVal, rightVal);
+                    return Compare(left, right, leftVal, rightVal, (a, b) => a == b);
                 }
                 else if (operatorToken.TokenType == TokenType.NOT_EQUAL)
                 {
-                    return !object.Equals(leftVal, rightVal);
+                    return Compare(left, right, leftVal, rightVal, (a, b) => a != b);
                 }
                 else
                 {
@@ -158,7 +162,6 @@ namespace ProgrammingLanguage.Interpreter
             }
             else if(node is IfNode)
             {
-                Node ifNode = ((IfNode)node).IfNodeProperty;
                 Node condition = ((IfNode)node).Condition;
                 List<Node> ifBlock = ((IfNode)node).Statements;
                 List<Node> elseBlock = ((IfNode)node).ElseBlock;
@@ -183,11 +186,10 @@ namespace ProgrammingLanguage.Interpreter
             }
             else if(node is WhileNode)
             {
-                Node whileNode = ((WhileNode)node).WhileNodeProperty;
                 Node condition = ((WhileNode)node).Condition;
                 List<Node> whileBlock = ((WhileNode)node).Statements;
 
-                if (Evaluate(condition) is bool && (bool)Evaluate(condition) == true)
+                while (Evaluate(condition) is bool && (bool)Evaluate(condition) == true)
                 {
                     foreach(Node n in whileBlock)
                     {
@@ -201,6 +203,80 @@ namespace ProgrammingLanguage.Interpreter
             return null;
         }
 
+        bool Compare(Node left, Node right, object leftVal, object rightVal, Func<int, int, bool> compare)
+        {
+            int leftInt, rightInt;
+            if(Int32.TryParse(leftVal.ToString(), out leftInt) && Int32.TryParse(rightVal.ToString(), out rightInt))
+            {
+                return CompareInteger(Int32.Parse(leftVal.ToString()), Int32.Parse(rightVal.ToString()), compare);
+            }
+            //left only is integer
+            else if(Int32.TryParse(leftVal.ToString(), out leftInt) && !Int32.TryParse(rightVal.ToString(), out rightInt))
+            {
+                int rightVal__ = Int32.Parse(Environment.Get(((AtomicNode)right).Value.ToString()).ToString());
+                return CompareInteger(Int32.Parse(leftVal.ToString()), rightVal__, compare);
+            }
+            //right only is integer
+            else if (!Int32.TryParse(leftVal.ToString(), out leftInt) && Int32.TryParse(rightVal.ToString(), out rightInt))
+            {
+                int leftVal__ = Int32.Parse(Environment.Get(((AtomicNode)left).Value.ToString()).ToString());
+                return CompareInteger(leftVal__, Int32.Parse(rightVal.ToString()), compare);
+            }
+            //no integer, means both are variables
+            else if (!Int32.TryParse(leftVal.ToString(), out leftInt) && !Int32.TryParse(rightVal.ToString(), out rightInt))
+            {
+                int leftVal__ = Int32.Parse(Environment.Get(((AtomicNode)left).Value.ToString()).ToString());
+                int rightVal__ = Int32.Parse(Environment.Get(((AtomicNode)right).Value.ToString()).ToString());
+                return CompareInteger(leftVal__, rightVal__, compare);
+            }
+            else
+            {
+                throw new InvalidOperationException("Compare error");
+            }
+        }
+
+        int Operate(Node left, Node right, object leftVal, object rightVal, Func<int, int, int> operate)
+        {
+            int leftInt, rightInt;
+            if (Int32.TryParse(leftVal.ToString(), out leftInt) && Int32.TryParse(rightVal.ToString(), out rightInt))
+            {
+                return OperateMath(Int32.Parse(leftVal.ToString()), Int32.Parse(rightVal.ToString()), operate);
+            }
+            //left only is integer
+            else if (Int32.TryParse(leftVal.ToString(), out leftInt) && !Int32.TryParse(rightVal.ToString(), out rightInt))
+            {
+                int rightVal__ = Int32.Parse(Environment.Get(((AtomicNode)right).Value.ToString()).ToString());
+                return OperateMath(Int32.Parse(leftVal.ToString()), rightVal__, operate);
+            }
+            //right only is integer
+            else if (!Int32.TryParse(leftVal.ToString(), out leftInt) && Int32.TryParse(rightVal.ToString(), out rightInt))
+            {
+                int leftVal__ = Int32.Parse(Environment.Get(((AtomicNode)left).Value.ToString()).ToString());
+                return OperateMath(leftVal__, Int32.Parse(rightVal.ToString()), operate);
+            }
+            //no integer, means both are variables
+            else if (!Int32.TryParse(leftVal.ToString(), out leftInt) && !Int32.TryParse(rightVal.ToString(), out rightInt))
+            {
+                int leftVal__ = Int32.Parse(Environment.Get(((AtomicNode)left).Value.ToString()).ToString());
+                int rightVal__ = Int32.Parse(Environment.Get(((AtomicNode)right).Value.ToString()).ToString());
+                return OperateMath(leftVal__, rightVal__, operate);
+            }
+            else
+            {
+                throw new InvalidOperationException("Compare error");
+            }
+        }
+
+        bool CompareInteger(int input1, int input2, Func<int, int, bool> comparisonOperator)
+        {
+            return comparisonOperator(input1, input2);
+        }
+
+        int OperateMath(int input1, int input2, Func<int, int, int> comparisonOperator)
+        {
+            return comparisonOperator(input1, input2);
+        }
+
         private string ConvertNativeBoolToBoolean(bool value)
         {
             if(value)
@@ -212,5 +288,7 @@ namespace ProgrammingLanguage.Interpreter
                 return "yanlış";
             }
         }
+
+        #endregion
     }
 }

@@ -6,6 +6,9 @@ namespace ProgrammingLanguageTest.LexerTest
     [TestFixture]
     public class Lexer_AndOrTest
     {
+        //###################################################################################
+        #region Tests
+
         [TestCase("ve veya")]
         [TestCase("veya ve")]
         public void CreateLexer_AndOrParse_GetTokens(string input)
@@ -15,5 +18,7 @@ namespace ProgrammingLanguageTest.LexerTest
 
             Assert.AreEqual(3, lexer.TokenList.Count);
         }
+
+        #endregion
     }
 }

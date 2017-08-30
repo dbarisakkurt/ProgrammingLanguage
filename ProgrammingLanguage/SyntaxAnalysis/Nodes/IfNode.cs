@@ -1,21 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace ProgrammingLanguage.SyntaxAnalysis.Nodes
 {
     class IfNode : Node, INodeList
     {
-        private List<Node> m_Statements = new List<Node>();
+        //###################################################################################
+        #region Fields
 
-        private Node m_IfNode;
+        private List<Node> m_Statements = new List<Node>();
         private Node m_Condition;
         private List<Node> m_ElseBlock;
 
-        public Node IfNodeProperty
-        {
-            get { return m_IfNode; }
-            set { m_IfNode = value; }
-        }
+        #endregion
+
+        //###################################################################################
+        #region Properties
 
         public Node Condition
         {
@@ -29,13 +28,22 @@ namespace ProgrammingLanguage.SyntaxAnalysis.Nodes
             set { m_ElseBlock = value; }
         }
 
-        public IfNode(Node ifNode, Node condition, List<Node> ifBlock, List<Node> elseBlock)
+        #endregion
+
+        //###################################################################################
+        #region Constructor
+
+        public IfNode(Node condition, List<Node> ifBlock, List<Node> elseBlock)
         {
-            m_IfNode = ifNode;
             m_Condition = condition;
             m_Statements = ifBlock;
             m_ElseBlock = elseBlock;
         }
+
+        #endregion
+
+        //###################################################################################
+        #region INodeList Implementation
 
         public List<Node> Statements
         {
@@ -57,5 +65,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis.Nodes
                 m_Statements.Add(statementNode);
             }
         }
+
+        #endregion
     }
 }

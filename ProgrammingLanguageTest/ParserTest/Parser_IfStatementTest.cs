@@ -7,6 +7,9 @@ namespace ProgrammingLanguageTest.ParserTest
     [TestFixture]
     public class Parser_IfStatementTest
     {
+        //###################################################################################
+        #region Tests
+
         [TestCase("eğer(x==2){yazdır 5;}değilse{yazdır 7;}")]
         [TestCase("eğer (x==2) { yazdır 5; } değilse { yazdır 7; }")]
         [TestCase("eğer (x==2) { yazdır 5 ; } değilse { yazdır 7 ; }")]
@@ -22,5 +25,7 @@ namespace ProgrammingLanguageTest.ParserTest
 
             //No Exception occurs
         }
+
+        #endregion
     }
 }

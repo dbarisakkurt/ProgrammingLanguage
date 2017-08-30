@@ -1,18 +1,17 @@
-﻿using NUnit.Framework;
+﻿using System.Collections.Generic;
+using NUnit.Framework;
 using ProgrammingLanguage.Interpreter;
 using ProgrammingLanguage.LexicalAnalysis;
 using ProgrammingLanguage.SyntaxAnalysis;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProgrammingLanguageTest.InterpreterTest
 {
     [TestFixture]
-    class Interpreter_PrintTest
+    public class Interpreter_PrintTest
     {
+        //###################################################################################
+        #region Tests
+
         [TestCase("yazdır 6;", "6")]
         [TestCase("yazdır doğru;", "doğru")]
         [TestCase("yazdır \"house\";", "house")]
@@ -30,5 +29,7 @@ namespace ProgrammingLanguageTest.InterpreterTest
             Assert.AreEqual(1, objRes.Count);
             Assert.AreEqual(result, objRes[0].ToString());
         }
+
+        #endregion
     }
 }

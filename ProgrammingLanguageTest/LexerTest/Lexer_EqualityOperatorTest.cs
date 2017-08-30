@@ -6,6 +6,9 @@ namespace ProgrammingLanguageTest.LexerTest
     [TestFixture]
     public class Lexer_EqualityOperatorTest
     {
+        //###################################################################################
+        #region Tests
+
         [TestCase("== =")]
         [TestCase("= ==")]
         [TestCase("+ ==")]
@@ -17,5 +20,7 @@ namespace ProgrammingLanguageTest.LexerTest
 
             Assert.AreEqual(3, lexer.TokenList.Count);
         }
+
+        #endregion
     }
 }

@@ -1,15 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace ProgrammingLanguage.SyntaxAnalysis.Nodes
 {
     internal class ProgramNode : Node, INodeList
     {
+        //###################################################################################
+        #region Fields
+
         private List<Node> m_Statements = new List<Node>();
+
+        #endregion
+
+        //###################################################################################
+        #region INodeList Implementation
 
         public List<Node> Statements
         {
-            get => m_Statements;
+            get
+            {
+                return m_Statements;
+            }
             set
             {
                 m_Statements = value;
@@ -20,5 +30,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis.Nodes
         {
             m_Statements.Add(statementNode);
         }
+
+        #endregion
     }
 }

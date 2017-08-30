@@ -1,10 +1,4 @@
-﻿using ProgrammingLanguage.LexicalAnalysis;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace ProgrammingLanguage.SyntaxAnalysis.Nodes
 {
     internal class UnaryNode : Node
@@ -17,13 +11,18 @@ namespace ProgrammingLanguage.SyntaxAnalysis.Nodes
 
         #endregion
 
-        public Node PrefixNode { get { return m_PrefixNode; } }
-        public Node Node { get { return m_Node; } }
+        //###################################################################################
+        #region Properties
+
+        internal Node PrefixNode { get { return m_PrefixNode; } }
+        internal Node Node { get { return m_Node; } }
+
+        #endregion
 
         //###################################################################################
         #region Constructor
 
-        public UnaryNode(Node prefixNode, Node node)
+        internal UnaryNode(Node prefixNode, Node node)
         {
             m_PrefixNode = prefixNode;
             m_Node = node;

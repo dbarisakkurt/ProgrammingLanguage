@@ -1,11 +1,10 @@
 ﻿
 //TODO LATER: add array type
 //TODO LATER fix the curly brace requirement after değilse keyword.
+//TODO LATER: enable float numbers
 
 
-//TODO: scan all files and format them.
-//TODO: add remaining if tests
-//TODO: add remaining while tests
+//TODO: disable float numbers
 //TODO: refactor Evaluator
 //TODO: if(x>2) calismiyor.
 
@@ -13,7 +12,6 @@
 //TODO return ifadesi
 //TODO: eğer-değilse
 //TODO: oldukça
-//TODO: fonksiyon tanımlama
 //TODO fonksiyon çağırma
 
 using ProgrammingLanguage.Interpreter;

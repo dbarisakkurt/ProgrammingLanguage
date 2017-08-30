@@ -7,6 +7,9 @@ namespace ProgrammingLanguageTest.ParserTest
     [TestFixture]
     public class Parser_ComplexProgramTest
     {
+        //###################################################################################
+        #region Tests
+
         [TestCase(@"
 fonk topla(x, y)
 {
@@ -44,6 +47,8 @@ değilse
 
             //No Exception occurs
         }
+
+        #endregion
 
     }
 }

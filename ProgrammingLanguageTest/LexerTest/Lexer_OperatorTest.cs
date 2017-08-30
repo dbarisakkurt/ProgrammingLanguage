@@ -6,6 +6,9 @@ namespace ProgrammingLanguageTest.LexerTest
     [TestFixture]
     public class Lexer_OperatorTest
     {
+        //###################################################################################
+        #region Tests
+
         [TestCase("+ - * /")]
         public void CreateLexer_AnalyzeInputLexically_Successful(string input)
         {
@@ -19,5 +22,7 @@ namespace ProgrammingLanguageTest.LexerTest
             Assert.AreEqual(TokenType.DIVIDE, lexer.TokenList[3].TokenType);
             Assert.AreEqual(TokenType.EOF, lexer.TokenList[4].TokenType);
         }
+
+        #endregion
     }
 }

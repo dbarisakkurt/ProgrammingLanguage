@@ -6,6 +6,9 @@ namespace ProgrammingLanguageTest.LexerTest
     [TestFixture]
     public class Lexer_CommentTest
     {
+        //###################################################################################
+        #region Tests
+
         [TestCase(@"+ # hello
             - # world *
             ==")]
@@ -20,5 +23,7 @@ namespace ProgrammingLanguageTest.LexerTest
             Assert.AreEqual(TokenType.EQUAL, lexer.TokenList[2].TokenType);
             Assert.AreEqual(TokenType.EOF, lexer.TokenList[3].TokenType);
         }
+
+        #endregion
     }
 }

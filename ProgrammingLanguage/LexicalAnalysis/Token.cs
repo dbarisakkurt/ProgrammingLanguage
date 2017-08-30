@@ -37,7 +37,7 @@ namespace ProgrammingLanguage.LexicalAnalysis
 
         public override string ToString()
         {
-            string text = "TokenType = " + m_TokenType + " Value: " + m_Value;
+            string text = $"TokenType = {m_TokenType}  Value: {m_Value}";
             return text;
         }
 

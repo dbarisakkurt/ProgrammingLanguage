@@ -7,6 +7,9 @@ namespace ProgrammingLanguageTest.ParserTest
     [TestFixture]
     public class Parser_WhileStatementTest
     {
+        //###################################################################################
+        #region Tests
+
         [TestCase("değişken x=2; oldukça(x<5){yazdır x; x=6;}")]
         [TestCase("değişken x = 2 ; oldukça (x<5) { yazdır x ; x = 6 ; }")]
         [TestCase("değişken x=2 ; oldukça (x < 5) { yazdır x ; x = 6 ; }")]
@@ -24,5 +27,7 @@ namespace ProgrammingLanguageTest.ParserTest
 
             //No Exception occurs
         }
+
+        #endregion
     }
 }

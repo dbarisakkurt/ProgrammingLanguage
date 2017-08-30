@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProgrammingLanguage.Interpreter
 {
     internal static class Environment
     {
+        //###################################################################################
+        #region Fields
+
         private static Dictionary<string, object> m_Variables = new Dictionary<string, object>();
+
+        #endregion
+
+        //###################################################################################
+        #region Methods
 
         internal static void Add(string variableName, object value)
         {
@@ -17,7 +22,16 @@ namespace ProgrammingLanguage.Interpreter
 
         internal static object Get(string variableName)
         {
-            return m_Variables[variableName];
+            if(m_Variables.ContainsKey(variableName))
+            {
+                return m_Variables[variableName];
+            }
+            else
+            {
+                throw new InvalidOperationException($"No such variable: {variableName}");
+            }
         }
+
+        #endregion
     }
 }

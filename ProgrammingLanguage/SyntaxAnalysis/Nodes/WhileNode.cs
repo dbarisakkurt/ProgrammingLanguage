@@ -1,37 +1,48 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace ProgrammingLanguage.SyntaxAnalysis.Nodes
 {
     internal class WhileNode : Node, INodeList
     {
-        private List<Node> m_Statements = new List<Node>();
+        //###################################################################################
+        #region Fields
 
-        private Node m_WhileNode;
+        private List<Node> m_Statements = new List<Node>();
         private Node m_Condition;
 
-        public Node WhileNodeProperty
-        {
-            get { return m_WhileNode; }
-            set { m_WhileNode = value; }
-        }
+        #endregion
 
-        public Node Condition
+        //###################################################################################
+        #region Properties
+
+        internal Node Condition
         {
             get { return m_Condition; }
             set { m_Condition = value; }
         }
 
-        public WhileNode(Node whileNode, Node condition, List<Node> block)
+        #endregion
+
+        //###################################################################################
+        #region Constructor
+
+        internal WhileNode( Node condition, List<Node> block)
         {
-            m_WhileNode = whileNode;
             m_Condition = condition;
             m_Statements = block;
         }
 
+        #endregion
+
+        //###################################################################################
+        #region INodeList Implementation
+
         public List<Node> Statements
         {
-            get => m_Statements;
+            get
+            {
+                return m_Statements;
+            }
             set
             {
                 m_Statements = value;
@@ -42,5 +53,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis.Nodes
         {
             m_Statements.Add(statementNode);
         }
+
+        #endregion
     }
 }

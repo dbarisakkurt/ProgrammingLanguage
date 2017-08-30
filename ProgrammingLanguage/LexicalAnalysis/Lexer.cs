@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace ProgrammingLanguage.LexicalAnalysis
 {
@@ -208,15 +207,15 @@ namespace ProgrammingLanguage.LexicalAnalysis
                 Advance();
             }
 
-            if(m_CurrentChar == '.')
-            {
-                Advance();
+            //if(m_CurrentChar == '.')
+            //{
+            //    Advance();
 
-                while (char.IsDigit(m_CurrentChar))
-                {
-                    Advance();
-                }
-            }
+            //    while (char.IsDigit(m_CurrentChar))
+            //    {
+            //        Advance();
+            //    }
+            //}
 
             int end = m_CurrentPosition;
 
@@ -226,10 +225,10 @@ namespace ProgrammingLanguage.LexicalAnalysis
             {
                 throw new LexerException("Integers cannot start with 0");
             }
-            if (result.StartsWith(".") || result.EndsWith("."))
-            {
-                throw new LexerException("Integers cannot start with 0");
-            }
+            //if (result.StartsWith(".") || result.EndsWith("."))
+            //{
+            //    throw new LexerException("Integers cannot start with 0");
+            //}
             return result;
         }
 

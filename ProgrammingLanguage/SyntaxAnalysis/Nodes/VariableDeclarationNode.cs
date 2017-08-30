@@ -1,15 +1,21 @@
-﻿using ProgrammingLanguage.LexicalAnalysis;
-using System;
-
+﻿
 namespace ProgrammingLanguage.SyntaxAnalysis.Nodes
 {
     internal class VariableDeclarationNode : Node
     {
+        //###################################################################################
+        #region Fields
+
         private string m_VariableName;
         private object m_Value;
         private Node m_RightHandValue;
 
-        public object Value
+        #endregion
+
+        //###################################################################################
+        #region Properties
+
+        internal object Value
         {
             get
             {
@@ -17,9 +23,15 @@ namespace ProgrammingLanguage.SyntaxAnalysis.Nodes
             }
         }
 
-        public Node RightHandValue { get { return m_RightHandValue; } }
+        internal Node RightHandValue
+        {
+            get
+            {
+                return m_RightHandValue;
+            }
+        }
 
-        public string VariableName
+        internal string VariableName
         {
             get
             {
@@ -27,11 +39,18 @@ namespace ProgrammingLanguage.SyntaxAnalysis.Nodes
             }
         }
 
-        public VariableDeclarationNode(string variableName, object value, Node rhv)
+        #endregion
+
+        //###################################################################################
+        #region Constructor
+
+        internal VariableDeclarationNode(string variableName, object value, Node rhv)
         {
             m_VariableName = variableName;
             m_Value = value;
             m_RightHandValue = rhv;
         }
+
+        #endregion
     }
 }

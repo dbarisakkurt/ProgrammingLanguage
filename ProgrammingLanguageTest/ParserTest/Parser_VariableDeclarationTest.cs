@@ -7,6 +7,9 @@ namespace ProgrammingLanguageTest.ParserTest
     [TestFixture]
     public class Parser_VariableDeclarationTest
     {
+        //###################################################################################
+        #region Tests
+
         [TestCase("değişken x = 2;")]
         [TestCase("değişken xx = 2;")]
         [TestCase("değişken x = 24;")]
@@ -43,5 +46,7 @@ namespace ProgrammingLanguageTest.ParserTest
 
             //No Exception occurs
         }
+
+        #endregion
     }
 }

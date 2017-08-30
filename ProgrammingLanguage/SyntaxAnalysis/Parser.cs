@@ -247,13 +247,10 @@ namespace ProgrammingLanguage.SyntaxAnalysis
         {
             List<Node> block = new List<Node>();
             INodeList node = null;
-            Node whileNode = null;
             Node condition = null;
 
             if (Match(TokenType.WHILE_KEYWORD))
             {
-                whileNode = new AtomicNode(m_CurrentToken, m_CurrentToken.Value);
-
                 Eat(TokenType.WHILE_KEYWORD);
 
                 Eat(TokenType.LEFT_PAREN);
@@ -264,7 +261,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis
                 {
                     throw new ParseException("Left curly brace is expected after right paranthesis in if statement");
                 }
-                node = new WhileNode(whileNode, condition, block);
+                node = new WhileNode(condition, block);
 
                 ParseStatement(node);
             }
@@ -299,13 +296,10 @@ namespace ProgrammingLanguage.SyntaxAnalysis
             List<Node> ifStatementBlock = new List<Node>();
             List<Node> elseStatementBlock = new List<Node>();
             INodeList node = null;
-            Node ifToken = null;
             Node expr = null;
 
             if (Match(TokenType.IF_KEYWORD))
             {
-                ifToken = new AtomicNode(m_CurrentToken, m_CurrentToken.Value);
-
                 Eat(TokenType.IF_KEYWORD);
                 Eat(TokenType.LEFT_PAREN);
                 expr = ParseExpression();
@@ -316,7 +310,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis
                     throw new ParseException("Left curly brace is expected after right paranthesis in if statement");
                 }
 
-                node = new IfNode(ifToken, expr, ifStatementBlock, elseStatementBlock);
+                node = new IfNode(expr, ifStatementBlock, elseStatementBlock);
 
                 ParseStatement(node);
                 if (Match(TokenType.ELSE_KEYWORD))
@@ -344,8 +338,10 @@ namespace ProgrammingLanguage.SyntaxAnalysis
             if(Match(TokenType.FUN_KEYWORD))
             {
                 Eat(TokenType.FUN_KEYWORD);
+
+                Node funcName = new AtomicNode(m_CurrentToken, m_CurrentToken.Value);
                 Eat(TokenType.VARIABLE);
-                ParseFunctionBody();
+                ParseFunctionBody(funcName);
             }
         }
 
@@ -580,7 +576,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis
 
         private Node ParseCall()
         {
-            ParsePrimary();
+            Node functionCallName = ParsePrimary();
 
             while(Match(TokenType.LEFT_PAREN))
             {
@@ -609,10 +605,14 @@ namespace ProgrammingLanguage.SyntaxAnalysis
             }
         }
 
-        private void ParseParameters()
+        private List<Node> ParseParameters()
         {
+            List<Node> parameters = new List<Node>();
+
             if(Match(TokenType.VARIABLE))
             {
+                parameters.Add(new AtomicNode(m_CurrentToken, m_CurrentToken.Value));
+
                 Eat(TokenType.VARIABLE);
                 while(Match(TokenType.COMMA))
                 {
@@ -620,11 +620,12 @@ namespace ProgrammingLanguage.SyntaxAnalysis
                     Eat(TokenType.VARIABLE);
                 }
             }
+            return parameters;
         }
 
-        private void ParseFunctionBody()
+        private void ParseFunctionBody(Node funcName)
         {
-            INodeList funcBlock = new FunctionBlock();
+            List<Node> funcStatements = new List<Node>();
 
             if(Match(TokenType.LEFT_PAREN))
             {
@@ -632,7 +633,8 @@ namespace ProgrammingLanguage.SyntaxAnalysis
 
                 if(Match(TokenType.VARIABLE))
                 {
-                    ParseParameters();
+                    List<Node> parameterList = ParseParameters();
+                    INodeList funcBlock = new FunctionBlock(funcName, parameterList, funcStatements);
 
                     if (Match(TokenType.RIGHT_PAREN))
                     {

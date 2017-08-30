@@ -3,6 +3,9 @@ using ProgrammingLanguage.LexicalAnalysis;
 
 namespace ProgrammingLanguageTest.LexerTest
 {
+    //###################################################################################
+    #region Tests
+
     [TestFixture]
     public class Lexer_VariableDeclarationTest
     {
@@ -32,5 +35,7 @@ namespace ProgrammingLanguageTest.LexerTest
 
             Assert.AreEqual(tokenCount, lexer.TokenList.Count);
         }
+
+        #endregion
     }
 }
