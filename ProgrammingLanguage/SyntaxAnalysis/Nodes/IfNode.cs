@@ -16,13 +16,13 @@ namespace ProgrammingLanguage.SyntaxAnalysis.Nodes
         //###################################################################################
         #region Properties
 
-        public Node Condition
+        internal Node Condition
         {
             get { return m_Condition; }
             set { m_Condition = value; }
         }
 
-        public List<Node> ElseBlock
+        internal List<Node> ElseBlock
         {
             get { return m_ElseBlock; }
             set { m_ElseBlock = value; }
@@ -33,7 +33,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis.Nodes
         //###################################################################################
         #region Constructor
 
-        public IfNode(Node condition, List<Node> ifBlock, List<Node> elseBlock)
+        internal IfNode(Node condition, List<Node> ifBlock, List<Node> elseBlock)
         {
             m_Condition = condition;
             m_Statements = ifBlock;
@@ -47,11 +47,8 @@ namespace ProgrammingLanguage.SyntaxAnalysis.Nodes
 
         public List<Node> Statements
         {
-            get => m_Statements;
-            set
-            {
-                m_Statements = value;
-            }
+            get { return m_Statements; }
+            set { m_Statements = value; }
         }
 
         public void AddStatement(Node statementNode, bool elseCall = false)

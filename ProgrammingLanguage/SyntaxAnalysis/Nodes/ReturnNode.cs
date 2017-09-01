@@ -13,14 +13,14 @@ namespace ProgrammingLanguage.SyntaxAnalysis.Nodes
         //###################################################################################
         #region Properties
 
-        public Node ToBeReturned { get { return m_ToBeReturned; } }
+        internal Node ToBeReturned { get { return m_ToBeReturned; } }
 
         #endregion
 
         //###################################################################################
         #region Constructor
 
-        public ReturnNode(Node toBeReturned)
+        internal ReturnNode(Node toBeReturned)
         {
             m_ToBeReturned = toBeReturned;
         }
