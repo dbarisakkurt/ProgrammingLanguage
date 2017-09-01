@@ -70,7 +70,7 @@ namespace ProgrammingLanguageTest.InterpreterTest
                 Console.SetOut(sw);
 
                 Evaluator eval = new Evaluator();
-                List<object> objRes = eval.Eval(parser.ProgramNode);
+                eval.Evaluate(parser.ProgramNode);
 
                 Assert.AreEqual(result, sw.ToString().Trim());
             }

@@ -3,12 +3,27 @@ using NUnit.Framework;
 using ProgrammingLanguage.Interpreter;
 using ProgrammingLanguage.LexicalAnalysis;
 using ProgrammingLanguage.SyntaxAnalysis;
+using System;
+using System.IO;
 
 namespace ProgrammingLanguageTest.InterpreterTest
 {
     [TestFixture]
     public class Interpreter_PrintTest
     {
+        //###################################################################################
+        #region Setup/TearDown
+
+        [TearDown]
+        public void TearDown()
+        {
+            StreamWriter sw = new StreamWriter(Console.OpenStandardOutput());
+            sw.AutoFlush = true;
+            Console.SetOut(sw);
+        }
+
+        #endregion
+
         //###################################################################################
         #region Tests
 
@@ -23,11 +38,16 @@ namespace ProgrammingLanguageTest.InterpreterTest
             Parser parser = new Parser(lexer.TokenList);
             parser.ParseProgram();
 
-            Evaluator eval = new Evaluator();
-            List<object> objRes = eval.Eval(parser.ProgramNode);
+            var out1 = Console.Out;
 
-            Assert.AreEqual(1, objRes.Count);
-            Assert.AreEqual(result, objRes[0].ToString());
+            using (StringWriter sw = new StringWriter())
+            {
+                Console.SetOut(sw);
+
+                Evaluator eval = new Evaluator();
+                eval.Evaluate(parser.ProgramNode);
+
+            }
         }
 
         #endregion

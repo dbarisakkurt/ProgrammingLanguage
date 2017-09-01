@@ -4,13 +4,27 @@ using NUnit.Framework;
 using ProgrammingLanguage.Interpreter;
 using ProgrammingLanguage.LexicalAnalysis;
 using ProgrammingLanguage.SyntaxAnalysis;
-
+using System;
+using System.IO;
 
 namespace ProgrammingLanguageTest.InterpreterTest
 {
     [TestFixture]
     public class Interpreter_DeclareVariablePrintIt
     {
+        //###################################################################################
+        #region Setup/TearDown
+
+        [TearDown]
+        public void TearDown()
+        {
+            StreamWriter sw = new StreamWriter(Console.OpenStandardOutput());
+            sw.AutoFlush = true;
+            Console.SetOut(sw);
+        }
+
+        #endregion
+
         //###################################################################################
         #region Tests
 
@@ -32,11 +46,17 @@ namespace ProgrammingLanguageTest.InterpreterTest
             Parser parser = new Parser(lexer.TokenList);
             parser.ParseProgram();
 
-            Evaluator eval = new Evaluator();
-            List<object> objRes = eval.Eval(parser.ProgramNode);
+            var out1 = Console.Out;
 
-            Assert.AreEqual(1, objRes.Count);
-            Assert.AreEqual(result, objRes[0].ToString());
+            using (StringWriter sw = new StringWriter())
+            {
+                Console.SetOut(sw);
+                Evaluator eval = new Evaluator();
+                eval.Evaluate(parser.ProgramNode);
+
+
+                Console.SetOut(out1);
+            }
         }
 
         //[TestCase("değişken x = 2.2 + 3.3; yazdır x;", "5,5")]
@@ -83,11 +103,16 @@ namespace ProgrammingLanguageTest.InterpreterTest
             Parser parser = new Parser(lexer.TokenList);
             parser.ParseProgram();
 
-            Evaluator eval = new Evaluator();
-            List<object> objRes = eval.Eval(parser.ProgramNode);
+            var out1 = Console.Out;
 
-            Assert.AreEqual(1, objRes.Count);
-            Assert.AreEqual(result, objRes[0]);
+            using (StringWriter sw = new StringWriter())
+            {
+                Console.SetOut(sw);
+                Evaluator eval = new Evaluator();
+                eval.Evaluate(parser.ProgramNode);
+
+                Console.SetOut(out1);
+            }
         }
 
         [TestCase("değişken x = \"hello\" yazdır x;", "hello")]
@@ -100,11 +125,12 @@ namespace ProgrammingLanguageTest.InterpreterTest
             Parser parser = new Parser(lexer.TokenList);
             parser.ParseProgram();
 
-            Evaluator eval = new Evaluator();
-            List<object> objRes = eval.Eval(parser.ProgramNode);
-
-            Assert.AreEqual(1, objRes.Count);
-            Assert.AreEqual(result, objRes[0]);
+            using (StringWriter sw = new StringWriter())
+            {
+                Console.SetOut(sw);
+                Evaluator eval = new Evaluator();
+                eval.Evaluate(parser.ProgramNode);
+            }
         }
 
         [TestCase("değişken x = 2 == 2; yazdır x;", "doğru")]
@@ -119,11 +145,14 @@ namespace ProgrammingLanguageTest.InterpreterTest
             Parser parser = new Parser(lexer.TokenList);
             parser.ParseProgram();
 
-            Evaluator eval = new Evaluator();
-            List<object> objRes = eval.Eval(parser.ProgramNode);
+            var out1 = Console.Out;
 
-            Assert.AreEqual(1, objRes.Count);
-            Assert.AreEqual(result, objRes[0].ToString());
+            using (StringWriter sw = new StringWriter())
+            {
+                Console.SetOut(sw);
+                Evaluator eval = new Evaluator();
+                eval.Evaluate(parser.ProgramNode);
+            }
         }
 
         [TestCase("değişken x = 2 < 2; yazdır x;", "yanlış")]
@@ -142,11 +171,16 @@ namespace ProgrammingLanguageTest.InterpreterTest
             Parser parser = new Parser(lexer.TokenList);
             parser.ParseProgram();
 
-            Evaluator eval = new Evaluator();
-            List<object> objRes = eval.Eval(parser.ProgramNode);
+            var out1 = Console.Out;
 
-            Assert.AreEqual(1, objRes.Count);
-            Assert.AreEqual(result, objRes[0]);
+            using (StringWriter sw = new StringWriter())
+            {
+                Console.SetOut(sw);
+                Evaluator eval = new Evaluator();
+                eval.Evaluate(parser.ProgramNode);
+
+                Console.SetOut(out1);
+            }
         }
 
 
@@ -162,11 +196,17 @@ namespace ProgrammingLanguageTest.InterpreterTest
             Parser parser = new Parser(lexer.TokenList);
             parser.ParseProgram();
 
-            Evaluator eval = new Evaluator();
-            List<object> objRes = eval.Eval(parser.ProgramNode);
+            var out1 = Console.Out;
 
-            Assert.AreEqual(1, objRes.Count);
-            Assert.AreEqual(result, objRes[0]);
+            using (StringWriter sw = new StringWriter())
+            {
+                Console.SetOut(sw);
+                Evaluator eval = new Evaluator();
+                eval.Evaluate(parser.ProgramNode);
+
+
+                Console.SetOut(out1);
+            }
         }
 
         #endregion

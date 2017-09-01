@@ -14,7 +14,7 @@ namespace ProgrammingLanguageTest.InterpreterTest
         //###################################################################################
         #region Setup/TearDown
 
-        [OneTimeTearDown]
+        [TearDown]
         public void TearDown()
         {
             StreamWriter sw = new StreamWriter(Console.OpenStandardOutput());
@@ -44,7 +44,7 @@ oldukça(x < 5) { yazdır x; x = x + 1; }", "0\r\n1\r\n2\r\n3\r\n4")]
                 Console.SetOut(sw);
 
                 Evaluator eval = new Evaluator();
-                List<object> objRes = eval.Eval(parser.ProgramNode);
+                eval.Evaluate(parser.ProgramNode);
 
                 Assert.AreEqual(result, sw.ToString().Trim());
             }

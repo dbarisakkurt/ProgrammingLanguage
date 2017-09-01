@@ -2,7 +2,7 @@
 
 namespace ProgrammingLanguage.SyntaxAnalysis.Nodes
 {
-    internal class BinaryOperatorNode : Node
+    internal class BinaryExpressionNode : Node
     {
         //###################################################################################
         #region Fields
@@ -25,7 +25,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis.Nodes
         //###################################################################################
         #region Constructor
 
-        internal BinaryOperatorNode(Node left, Node oper, Node right)
+        internal BinaryExpressionNode(Node left, Node oper, Node right)
         {
             m_Left = left;
             m_Oper = oper;

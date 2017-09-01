@@ -6,14 +6,17 @@ using System.Threading.Tasks;
 
 namespace ProgrammingLanguage.SyntaxAnalysis.Nodes
 {
-    class CallNode : Node
+    internal class CallNode : Node
     {
-        public Node m_Name;
-        public List<Node> m_Arguments;
+        private string m_FunctionName;
+        private List<Node> m_Arguments;
 
-        public CallNode(Node name, List<Node> args)
+        internal string FunctionName { get { return m_FunctionName; } }
+        internal List<Node> Arguments { get { return m_Arguments; } }
+
+        internal CallNode(string functionName, List<Node> args)
         {
-            m_Name = name;
+            m_FunctionName = functionName;
             m_Arguments = args;
         }
     }

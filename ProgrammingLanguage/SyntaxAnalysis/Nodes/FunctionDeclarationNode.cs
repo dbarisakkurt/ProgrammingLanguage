@@ -9,7 +9,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis.Nodes
         #region Fields
 
         private List<Node> m_Statements = new List<Node>();
-        private Node m_FunctionName;
+        private string m_FunctionName;
         private List<Node> m_ParameterList;
 
         #endregion
@@ -17,7 +17,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis.Nodes
         //###################################################################################
         #region Properties
 
-        internal Node FunctionName
+        internal string FunctionName
         {
             get { return m_FunctionName; }
             set { m_FunctionName = value; }
@@ -34,7 +34,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis.Nodes
         //###################################################################################
         #region Constructor
 
-        public FunctionDeclarationNode(Node functionName, List<Node> parameterList, List<Node> statements)
+        public FunctionDeclarationNode(string functionName, List<Node> parameterList, List<Node> statements)
         {
             m_FunctionName = functionName;
             m_ParameterList = parameterList;

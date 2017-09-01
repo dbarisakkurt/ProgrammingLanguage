@@ -14,7 +14,7 @@ namespace ProgrammingLanguageTest.InterpreterTest
         //###################################################################################
         #region Setup/TearDown
 
-        [OneTimeTearDown]
+        [TearDown]
         public void TearDown()
         {
             StreamWriter sw = new StreamWriter(Console.OpenStandardOutput());
@@ -67,7 +67,7 @@ namespace ProgrammingLanguageTest.InterpreterTest
                 Console.SetOut(sw);
 
                 Evaluator eval = new Evaluator();
-                List<object> objRes = eval.Eval(parser.ProgramNode);
+                eval.Evaluate(parser.ProgramNode);
 
                 Assert.AreEqual(result, sw.ToString().Trim());
             }

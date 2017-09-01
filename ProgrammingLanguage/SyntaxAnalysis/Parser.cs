@@ -140,13 +140,6 @@ namespace ProgrammingLanguage.SyntaxAnalysis
                     Node exprNode = ParseExpression();
                     result = new VariableDeclarationNode(variableName, m_CurrentToken.Value, exprNode);
                 }
-                //IMPORTANT!!! THINK ABOUT IT
-                //else if (Match(TokenType.LEFT_PAREN))
-                //{
-                //    Eat(TokenType.LEFT_PAREN);
-                //    Node callNode = ParseExpression();
-                //    result = callNode;
-                //}
             }
             else
             {
@@ -358,7 +351,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis
             {
                 Eat(TokenType.FUN_KEYWORD);
 
-                Node funcName = new AtomicNode(m_CurrentToken, m_CurrentToken.Value);
+                string funcName = m_CurrentToken.Value.ToString();
                 Eat(TokenType.VARIABLE);
                 Node funcBlock = ParseFunctionBody(funcName);
                 return funcBlock;
@@ -381,11 +374,11 @@ namespace ProgrammingLanguage.SyntaxAnalysis
 
             while (Match(TokenType.OR_KEYWORD))
             {
-                Node operatorNode = new AtomicNode(m_CurrentToken, m_CurrentToken.Value);
+                OperatorNode operatorNode = new OperatorNode(m_CurrentToken, m_CurrentToken.Value.ToString());
                 Eat(TokenType.OR_KEYWORD);
                 Node rightAndNode = ParseLogicAnd();
 
-                andNode = new BinaryOperatorNode(andNode, operatorNode, rightAndNode);
+                andNode = new BinaryExpressionNode(andNode, operatorNode, rightAndNode);
             }
             return andNode;
         }
@@ -396,11 +389,11 @@ namespace ProgrammingLanguage.SyntaxAnalysis
 
             while (Match(TokenType.AND_KEYWORD))
             {
-                AtomicNode operatorNode = new AtomicNode(m_CurrentToken, m_CurrentToken.Value);
+                OperatorNode operatorNode = new OperatorNode(m_CurrentToken, m_CurrentToken.Value.ToString());
 
                 Eat(TokenType.AND_KEYWORD);
                 Node rightEqualityNode = Equality();
-                equalityNode = new BinaryOperatorNode(equalityNode, operatorNode, rightEqualityNode);
+                equalityNode = new BinaryExpressionNode(equalityNode, operatorNode, rightEqualityNode);
 
             }
             return equalityNode;
@@ -412,7 +405,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis
 
             while (Match(TokenType.EQUAL) || Match(TokenType.NOT_EQUAL))
             {
-                Node operatorNode = new AtomicNode(m_CurrentToken, m_CurrentToken.Value);
+                OperatorNode operatorNode = new OperatorNode(m_CurrentToken, m_CurrentToken.Value.ToString());
 
                 if(Match(TokenType.EQUAL))
                 {
@@ -424,7 +417,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis
                 }
 
                 Node rightComparisonNode = ParseComparison();
-                comparisonNode = new BinaryOperatorNode(comparisonNode, operatorNode, rightComparisonNode);
+                comparisonNode = new BinaryExpressionNode(comparisonNode, operatorNode, rightComparisonNode);
             }
             return comparisonNode;
         }
@@ -436,7 +429,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis
             while (Match(TokenType.GREATER_THAN) || Match(TokenType.GREATER_THAN_OR_EQUAL)
                 || Match(TokenType.LESS_THAN) || Match(TokenType.LESS_THAN_OR_EQUAL))
             {
-                Node operatorNode = new AtomicNode(m_CurrentToken, m_CurrentToken.Value);
+                OperatorNode operatorNode = new OperatorNode(m_CurrentToken, m_CurrentToken.Value.ToString());
                 if (Match(TokenType.GREATER_THAN))
                 {
                     Eat(TokenType.GREATER_THAN);
@@ -455,7 +448,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis
                 }
 
                 Node rightTermNode = ParseTerm();
-                termNode = new BinaryOperatorNode(termNode, operatorNode, rightTermNode);
+                termNode = new BinaryExpressionNode(termNode, operatorNode, rightTermNode);
             }
             return termNode;
         }
@@ -466,7 +459,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis
 
             while (Match(TokenType.MINUS) || Match(TokenType.PLUS))
             {
-                Node operatorNode = new AtomicNode(m_CurrentToken, m_CurrentToken.Value);
+                OperatorNode operatorNode = new OperatorNode(m_CurrentToken, m_CurrentToken.Value.ToString());
                 if (Match(TokenType.MINUS))
                 {
                     Eat(TokenType.MINUS);
@@ -477,7 +470,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis
                 }
 
                 Node rightFactorNode = ParseFactor();
-                factorNode = new BinaryOperatorNode(factorNode, operatorNode, rightFactorNode);
+                factorNode = new BinaryExpressionNode(factorNode, operatorNode, rightFactorNode);
             }
 
             return factorNode;
@@ -489,7 +482,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis
 
             while (Match(TokenType.DIVIDE) || Match(TokenType.MULTIPLY))
             {
-                Node operatorNode = new AtomicNode(m_CurrentToken, m_CurrentToken.Value);
+                OperatorNode operatorNode = new OperatorNode(m_CurrentToken, m_CurrentToken.Value.ToString());
                 if (Match(TokenType.DIVIDE))
                 {
                     Eat(TokenType.DIVIDE);
@@ -500,7 +493,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis
                 }
 
                 Node rightUnaryNode = ParseUnary();
-                unaryNode = new BinaryOperatorNode(unaryNode, operatorNode, rightUnaryNode);
+                unaryNode = new BinaryExpressionNode(unaryNode, operatorNode, rightUnaryNode);
             }
 
             return unaryNode;
@@ -512,7 +505,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis
 
             if (Match(TokenType.NOT) || Match(TokenType.MINUS))
             {
-                Node prefixOpNode = new AtomicNode(m_CurrentToken, m_CurrentToken.Value);
+                OperatorNode prefixOpNode = new OperatorNode(m_CurrentToken, m_CurrentToken.Value.ToString());
                 if (Match(TokenType.NOT))
                 {
                     Eat(TokenType.NOT);
@@ -547,37 +540,31 @@ namespace ProgrammingLanguage.SyntaxAnalysis
             Node node;
             if(Match(TokenType.NUMBER))
             {
-                node = new AtomicNode(m_CurrentToken, m_CurrentToken.Value);
+                node = new NumberNode(m_CurrentToken, Int32.Parse(m_CurrentToken.Value.ToString()));
                 Eat(TokenType.NUMBER);
                 
             }
             else if (Match(TokenType.STRING))
             {
-                node = new AtomicNode(m_CurrentToken, m_CurrentToken.Value);
+                node = new StringNode(m_CurrentToken, (string)m_CurrentToken.Value);
                 Eat(TokenType.STRING);
                 
             }
             else if (Match(TokenType.TRUE_KEYWORD))
             {
-                node = new AtomicNode(m_CurrentToken, true);
+                node = new BooleanNode(m_CurrentToken, true);
                 Eat(TokenType.TRUE_KEYWORD);
                 
             }
             else if (Match(TokenType.FALSE_KEYWORD))
             {
-                node = new AtomicNode(m_CurrentToken, false);
+                node = new BooleanNode(m_CurrentToken, false);
                 Eat(TokenType.FALSE_KEYWORD);
-                
-            }
-            else if (Match(TokenType.NIL))
-            {
-                node = new AtomicNode(m_CurrentToken, m_CurrentToken.Value);
-                Eat(TokenType.NIL);
                 
             }
             else if (Match(TokenType.VARIABLE))
             {
-                node = new AtomicNode(m_CurrentToken, m_CurrentToken.Value);
+                node = new VariableNode(m_CurrentToken.Value.ToString(), m_CurrentToken);
                 Eat(TokenType.VARIABLE);
                 
             }
@@ -609,7 +596,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis
                 Eat(TokenType.RIGHT_PAREN);
             }
 
-            Node callNode = new CallNode(functionCallName, args);
+            Node callNode = new CallNode(((VariableNode)functionCallName).VariableName, args);
 
             return callNode;
         }
@@ -645,20 +632,20 @@ namespace ProgrammingLanguage.SyntaxAnalysis
 
             if(Match(TokenType.VARIABLE))
             {
-                parameters.Add(new AtomicNode(m_CurrentToken, m_CurrentToken.Value));
+                parameters.Add(new VariableNode(m_CurrentToken.Value.ToString(), m_CurrentToken));
 
                 Eat(TokenType.VARIABLE);
                 while(Match(TokenType.COMMA))
                 {
                     Eat(TokenType.COMMA);
-                    parameters.Add(new AtomicNode(m_CurrentToken, m_CurrentToken.Value));
+                    parameters.Add(new VariableNode(m_CurrentToken.Value.ToString(), m_CurrentToken));
                     Eat(TokenType.VARIABLE);
                 }
             }
             return parameters;
         }
 
-        private Node ParseFunctionBody(Node funcName)
+        private Node ParseFunctionBody(string funcName)
         {
             List<Node> funcStatements = new List<Node>();
             INodeList funcBlock = new FunctionDeclarationNode(funcName, new List<Node>(), funcStatements); ;

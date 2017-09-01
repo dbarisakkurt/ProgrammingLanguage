@@ -43,25 +43,29 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConsoleHelper.cs" />
-    <Compile Include="Interpreter\SymbolTable.cs" />
     <Compile Include="Interpreter\Evaluator.cs" />
+    <Compile Include="Interpreter\SymbolTable.cs" />
     <Compile Include="Interpreter\FunctionTable.cs" />
     <Compile Include="LexicalAnalysis\Lexer.cs" />
     <Compile Include="LexicalAnalysis\LexerException.cs" />
     <Compile Include="LexicalAnalysis\Token.cs" />
     <Compile Include="LexicalAnalysis\TokenType.cs" />
-    <Compile Include="SyntaxAnalysis\Nodes\AtomicNode.cs" />
-    <Compile Include="SyntaxAnalysis\Nodes\BinaryOperatorNode.cs" />
+    <Compile Include="SyntaxAnalysis\Nodes\BinaryExpressionNode.cs" />
+    <Compile Include="SyntaxAnalysis\Nodes\BooleanNode.cs" />
     <Compile Include="SyntaxAnalysis\Nodes\CallNode.cs" />
     <Compile Include="SyntaxAnalysis\Nodes\FunctionDeclarationNode.cs" />
     <Compile Include="SyntaxAnalysis\Nodes\IfNode.cs" />
     <Compile Include="SyntaxAnalysis\Nodes\INodeList.cs" />
     <Compile Include="SyntaxAnalysis\Nodes\Node.cs" />
+    <Compile Include="SyntaxAnalysis\Nodes\NumberNode.cs" />
+    <Compile Include="SyntaxAnalysis\Nodes\OperatorNode.cs" />
     <Compile Include="SyntaxAnalysis\Nodes\PrintNode.cs" />
     <Compile Include="SyntaxAnalysis\Nodes\ProgramNode.cs" />
     <Compile Include="SyntaxAnalysis\Nodes\ReturnNode.cs" />
+    <Compile Include="SyntaxAnalysis\Nodes\StringNode.cs" />
     <Compile Include="SyntaxAnalysis\Nodes\UnaryNode.cs" />
     <Compile Include="SyntaxAnalysis\Nodes\VariableDeclarationNode.cs" />
+    <Compile Include="SyntaxAnalysis\Nodes\VariableNode.cs" />
     <Compile Include="SyntaxAnalysis\Nodes\WhileNode.cs" />
     <Compile Include="SyntaxAnalysis\ParseException.cs" />
     <Compile Include="SyntaxAnalysis\Parser.cs" />

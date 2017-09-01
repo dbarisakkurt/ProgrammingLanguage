@@ -2,24 +2,24 @@
 
 namespace ProgrammingLanguage.SyntaxAnalysis.Nodes
 {
-    internal class AtomicNode : Node
+    internal class VariableNode : Node
     {
         //###################################################################################
         #region Fields
 
         private Token m_Token;
-        private object m_Value;
+        private string m_VariableName;
 
         #endregion
 
         //###################################################################################
         #region Properties
 
-        internal object Value
+        internal string VariableName
         {
             get
             {
-                return m_Value;
+                return m_VariableName;
             }
         }
 
@@ -36,10 +36,10 @@ namespace ProgrammingLanguage.SyntaxAnalysis.Nodes
         //###################################################################################
         #region Constructor
 
-        internal AtomicNode(Token token, object value)
+        internal VariableNode(string variableName, Token token)
         {
+            m_VariableName = variableName;
             m_Token = token;
-            m_Value = value;
         }
 
         #endregion
@@ -49,7 +49,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis.Nodes
 
         public override string ToString()
         {
-            return this.m_Value.ToString();
+            return this.m_VariableName;
         }
 
         #endregion
