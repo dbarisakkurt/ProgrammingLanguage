@@ -1,14 +1,17 @@
-﻿using ProgrammingLanguage.LexicalAnalysis;
-using ProgrammingLanguage.SyntaxAnalysis.Nodes;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using ProgrammingLanguage.LexicalAnalysis;
+using ProgrammingLanguage.SyntaxAnalysis.Nodes;
 
 namespace ProgrammingLanguage.Interpreter
 {
-    class Evaluator
+    internal class Evaluator
     {
+        //###################################################################################
+        #region Internal Methods
+
         internal void Evaluate(ProgramNode programNode)
         {
             List<object> values = new List<object>();
@@ -20,6 +23,11 @@ namespace ProgrammingLanguage.Interpreter
                 Eval(node, symbolTable, functionTable);
             }
         }
+
+        #endregion
+
+        //###################################################################################
+        #region Private Methods
 
         private object Eval(Node node, SymbolTable symbolTable, FunctionTable functionTable)
         {
@@ -336,5 +344,7 @@ namespace ProgrammingLanguage.Interpreter
                 throw new InvalidOperationException("Compare error");
             }
         }
+
+        #endregion
     }
 }

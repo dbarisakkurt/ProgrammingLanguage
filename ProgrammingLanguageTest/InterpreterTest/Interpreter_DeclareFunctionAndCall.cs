@@ -32,6 +32,7 @@ namespace ProgrammingLanguageTest.InterpreterTest
         //function call and argument size different test = exception
         //function call inside function call
         //recursive function call
+        //string equality test
 
         [TestCase("fonk merhabaYaz() { yazdır \"merhaba\"; } merhabaYaz();", "merhaba")]
         [TestCase("fonk doğruDön() { dön doğru; } yazdır doğruDön();", "doğru")]

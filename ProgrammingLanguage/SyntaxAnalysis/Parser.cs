@@ -519,15 +519,14 @@ namespace ProgrammingLanguage.SyntaxAnalysis
                 node = new UnaryNode(prefixOpNode, tempNode);
             }
             else if((Match(TokenType.NUMBER) || Match(TokenType.STRING) || Match(TokenType.TRUE_KEYWORD) ||
-                Match(TokenType.FALSE_KEYWORD) || Match(TokenType.NIL) || Match(TokenType.VARIABLE) ||
+                Match(TokenType.FALSE_KEYWORD) || Match(TokenType.VARIABLE) ||
                 Match(TokenType.LEFT_PAREN))  && NextToken().TokenType != TokenType.LEFT_PAREN )
             {
                 node = ParsePrimary();
             }
             else if(Match(TokenType.NUMBER) || Match(TokenType.STRING)
                     || Match(TokenType.TRUE_KEYWORD) || Match(TokenType.FALSE_KEYWORD)
-                    || Match(TokenType.NIL) || Match(TokenType.VARIABLE) 
-                    || Match(TokenType.LEFT_PAREN))
+                    || Match(TokenType.VARIABLE) || Match(TokenType.LEFT_PAREN))
             {
                 Node tempNode = ParseCall();
                 node = new UnaryNode(null, tempNode);  //TODO think about first parameter

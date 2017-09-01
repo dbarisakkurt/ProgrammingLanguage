@@ -27,7 +27,6 @@ namespace ProgrammingLanguage.LexicalAnalysis
         FALSE_KEYWORD,
         LEFT_CURLY_BRACE,
         RIGHT_CURLY_BRACE,
-        NIL,
         COMMA,
 
         PRINT_KEYWORD,

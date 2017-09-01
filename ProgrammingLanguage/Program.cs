@@ -5,10 +5,11 @@
 //TODO LATER: support for statements like yazdır topla(2,3); that calls function in print statement
 //TODO LATER: recursive function call
 
+
 //TODO: add an upper limit to number of function arguments
 //TODO: check number of declaration of func arguments and parameters in the call, and add a test 
 //TODO: add assert section to all parser tests
-//TODO: string equality test
+//TODO: write tests for cases in Interpreter test
 
 using ProgrammingLanguage.Interpreter;
 using ProgrammingLanguage.LexicalAnalysis;
