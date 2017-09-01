@@ -57,17 +57,103 @@ namespace ProgrammingLanguage.Interpreter
             }
             else if (node is PrintNode)      //returns null
             {
-                object printResult;
+                object value = null;
+                object printResult =null;
                 Node toBePrinted = ((PrintNode)node).ToBePrinted;
-                var value = ((AtomicNode)toBePrinted).Value;
-                if(((AtomicNode)toBePrinted).Token.TokenType == TokenType.VARIABLE)
+                Node singleNode = (toBePrinted as AtomicNode);
+                if(singleNode != null)
                 {
-                    printResult = symbolTable.Get(value.ToString());
+                    value = (toBePrinted as AtomicNode).Value;
+                    if(((AtomicNode)singleNode).Token.TokenType == TokenType.VARIABLE)
+                    {
+                        printResult = symbolTable.Get(value.ToString());
+                    }
+                    else
+                    {
+                        printResult = value;
+                    }
                 }
-                else
+                singleNode = (toBePrinted as UnaryNode);
+                if (singleNode != null)
                 {
-                    printResult = value;
+                    value = (toBePrinted as UnaryNode).Node;
+
+                    if (value is AtomicNode)
+                    {
+                        var a = ((AtomicNode)value).Value;
+                    }
+                    else if (value is CallNode)
+                    {
+                        var funName = ((AtomicNode)((CallNode)value).m_Name).Value.ToString();
+                        FunctionDeclarationNode  fdn = functionTable.Get(funName);
+                        List<Node> parameterValues = ((CallNode)value).m_Arguments;
+
+                        SymbolTable symTable = (SymbolTable)symbolTable.Get(funName);
+                        //symboltable yerine symtable kullan
+                        for (int i = 0; i < parameterValues.Count; i++)
+                        {
+                            object nodeVal = ((AtomicNode)parameterValues[i]).Value;
+
+                            DictionaryEntry de = symTable.m_Variables.Cast<DictionaryEntry>().ElementAt(i);
+                            de.Value = nodeVal;
+                            symTable.Add(de.Key.ToString(), de.Value);
+                        }
+
+                        for (int i = 0; i<fdn.Statements.Count; i++)
+                        {
+                            if(i == fdn.Statements.Count - 1 && fdn.Statements[i] is ReturnNode)
+                            {
+                                printResult = Evaluate(fdn.Statements[i], symTable, functionTable);
+                            }
+                            else
+                            {
+                                Evaluate(fdn.Statements[i], symTable, functionTable);
+                            }
+                            
+                        }
+                    }
                 }
+                singleNode = (toBePrinted as CallNode);
+                if (singleNode != null)
+                {
+                    value = (toBePrinted as CallNode);
+
+                    if (value is AtomicNode)
+                    {
+                        var a = ((AtomicNode)value).Value;
+                    }
+                    else if (value is CallNode)
+                    {
+                        var funName = ((AtomicNode)((CallNode)value).m_Name).Value.ToString();
+                        FunctionDeclarationNode fdn = functionTable.Get(funName);
+
+
+                        List<Node> parameterValues = ((CallNode)value).m_Arguments;
+                        SymbolTable symTable = (SymbolTable)symbolTable.Get(funName);
+
+                        for (int i = 0; i < parameterValues.Count; i++)
+                        {
+                            object nodeVal = ((AtomicNode)parameterValues[i]).Value;
+
+                            DictionaryEntry de = symTable.m_Variables.Cast<DictionaryEntry>().ElementAt(i);
+                            de.Value = nodeVal;
+                            symTable.Add(de.Key.ToString(), de.Value);
+                        }
+
+                        for (int i = 0; i < fdn.Statements.Count; i++)
+                        {
+                            if (i == fdn.Statements.Count - 1 && fdn.Statements[i] is ReturnNode)
+                            {
+                                Evaluate(fdn.Statements[i], symTable, functionTable);
+                            }
+
+                            Evaluate(fdn.Statements[i], symTable, functionTable);
+                        }
+                    }
+
+
+                }
+
 
                 if(printResult is bool && (bool)printResult == true)
                 {
@@ -260,14 +346,22 @@ namespace ProgrammingLanguage.Interpreter
             {
                 ReturnNode retNode = ((ReturnNode)node);
 
-                if (((AtomicNode)retNode.ToBeReturned).Token.TokenType == TokenType.VARIABLE)
+                if(retNode.ToBeReturned is AtomicNode)
                 {
-                    return symbolTable.Get(((AtomicNode)retNode.ToBeReturned).Value.ToString());
+                    if (((AtomicNode)retNode.ToBeReturned).Token.TokenType == TokenType.VARIABLE)
+                    {
+                        return symbolTable.Get(((AtomicNode)retNode.ToBeReturned).Value.ToString());
+                    }
+                    else
+                    {
+                        return ((AtomicNode)retNode.ToBeReturned).Value;
+                    }
                 }
-                else
+                else if(retNode.ToBeReturned is BinaryOperatorNode)
                 {
-                    return ((AtomicNode)retNode.ToBeReturned).Value;
+                    return Evaluate(retNode.ToBeReturned, symbolTable, functionTable);
                 }
+                
             }
 
             return null;

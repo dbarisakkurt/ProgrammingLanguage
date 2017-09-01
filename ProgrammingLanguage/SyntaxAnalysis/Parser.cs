@@ -129,17 +129,24 @@ namespace ProgrammingLanguage.SyntaxAnalysis
         {
             Node result = null;
 
-            if(Match(TokenType.VARIABLE))
+            if (Match(TokenType.VARIABLE))
             {
                 string variableName = m_CurrentToken.Value.ToString();
                 Eat(TokenType.VARIABLE);
 
-                if(Match(TokenType.ASSIGNMENT))
+                if (Match(TokenType.ASSIGNMENT))
                 {
                     Eat(TokenType.ASSIGNMENT);
                     Node exprNode = ParseExpression();
                     result = new VariableDeclarationNode(variableName, m_CurrentToken.Value, exprNode);
                 }
+                //IMPORTANT!!! THINK ABOUT IT
+                //else if (Match(TokenType.LEFT_PAREN))
+                //{
+                //    Eat(TokenType.LEFT_PAREN);
+                //    Node callNode = ParseExpression();
+                //    result = callNode;
+                //}
             }
             else
             {
@@ -189,7 +196,12 @@ namespace ProgrammingLanguage.SyntaxAnalysis
 
         private void ParseStatement(INodeList nodeList, bool elseCall = false)
         {
-            if(Match(TokenType.VARIABLE))
+            if (Match(TokenType.VARIABLE) && NextToken().TokenType == TokenType.LEFT_PAREN)
+            {
+                Node returnValNode = ParseCall();
+                nodeList.AddStatement(returnValNode);
+            }
+            else if (Match(TokenType.VARIABLE))
             {
                 Node exprStatement = ParseExprStatement();
                 nodeList.AddStatement(exprStatement, elseCall);
@@ -515,14 +527,14 @@ namespace ProgrammingLanguage.SyntaxAnalysis
             }
             else if((Match(TokenType.NUMBER) || Match(TokenType.STRING) || Match(TokenType.TRUE_KEYWORD) ||
                 Match(TokenType.FALSE_KEYWORD) || Match(TokenType.NIL) || Match(TokenType.VARIABLE) ||
-                Match(TokenType.LEFT_PAREN)) && NextToken().TokenType != TokenType.LEFT_PAREN)
+                Match(TokenType.LEFT_PAREN))  && NextToken().TokenType != TokenType.LEFT_PAREN )
             {
                 node = ParsePrimary();
             }
             else if(Match(TokenType.NUMBER) || Match(TokenType.STRING)
                     || Match(TokenType.TRUE_KEYWORD) || Match(TokenType.FALSE_KEYWORD)
                     || Match(TokenType.NIL) || Match(TokenType.VARIABLE) 
-                    || Match(TokenType.LEFT_PAREN) && NextToken().TokenType != TokenType.LEFT_PAREN)
+                    || Match(TokenType.LEFT_PAREN))
             {
                 Node tempNode = ParseCall();
                 node = new UnaryNode(null, tempNode);  //TODO think about first parameter
@@ -591,22 +603,9 @@ namespace ProgrammingLanguage.SyntaxAnalysis
             while (Match(TokenType.LEFT_PAREN))
             {
                 Eat(TokenType.LEFT_PAREN);
-
-                //OrderedDictionary dict = (OrderedDictionary)Interpreter.SymbolTable.Get(((AtomicNode)functionCallName).Value.ToString());
-
+                
                 args = ParseArguments();
-
-                //if(args.Count > 0)
-                //{
-                //    int i = 0;
-                //    foreach(Node n in args)
-                //    {
-                //        dict[i] = ((AtomicNode)n).Value;
-                //        i += 1;
-                //    }
-
-
-                //}
+                
                 Eat(TokenType.RIGHT_PAREN);
             }
 
@@ -661,8 +660,8 @@ namespace ProgrammingLanguage.SyntaxAnalysis
 
         private Node ParseFunctionBody(Node funcName)
         {
-            INodeList funcBlock = null;
             List<Node> funcStatements = new List<Node>();
+            INodeList funcBlock = new FunctionDeclarationNode(funcName, new List<Node>(), funcStatements); ;
 
             if(Match(TokenType.LEFT_PAREN))
             {
@@ -672,20 +671,18 @@ namespace ProgrammingLanguage.SyntaxAnalysis
                 {
 
                     List<Node> parameterList = ParseParameters();
-                    //if(parameterList.Count > 0)
-                    //{
-                    //    Interpreter.SymbolTable.Add(((AtomicNode)funcName).Value.ToString(), new OrderedDictionary());
-                    //}
-
-                    //foreach(Node n in parameterList)
-                    //{
-                    //    OrderedDictionary dict1 = (OrderedDictionary)Interpreter.SymbolTable.Get(((AtomicNode)funcName).Value.ToString());
-                    //    dict1[((AtomicNode)n).Value.ToString()] = null;
-
-                    //}
 
                     funcBlock = new FunctionDeclarationNode(funcName, parameterList, funcStatements);
 
+                    if (Match(TokenType.RIGHT_PAREN))
+                    {
+                        Eat(TokenType.RIGHT_PAREN);
+                    }
+
+                    ParseBlock(funcBlock);
+                }
+                else //no variable given to function
+                {
                     if (Match(TokenType.RIGHT_PAREN))
                     {
                         Eat(TokenType.RIGHT_PAREN);
