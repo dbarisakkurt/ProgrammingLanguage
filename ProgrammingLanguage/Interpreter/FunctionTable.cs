@@ -2,37 +2,35 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProgrammingLanguage.Interpreter
 {
-    internal static class FunctionTable
+    internal class FunctionTable
     {
         //###################################################################################
         #region Fields
 
-        private static Dictionary<string, Node> m_Variables = new Dictionary<string, Node>();
+        private Dictionary<string, FunctionDeclarationNode> m_Functions = new Dictionary<string, FunctionDeclarationNode>();
 
         #endregion
 
         //###################################################################################
         #region Methods
 
-        internal static void Add(string variableName, Node value)
+        internal void Add(string functionName, FunctionDeclarationNode value)
         {
-            m_Variables[variableName] = value;
+            m_Functions[functionName] = value;
         }
 
-        internal static Node Get(string variableName)
+        internal FunctionDeclarationNode Get(string functionName)
         {
-            if (m_Variables.ContainsKey(variableName))
+            if (m_Functions.ContainsKey(functionName))
             {
-                return m_Variables[variableName];
+                return m_Functions[functionName];
             }
             else
             {
-                throw new InvalidOperationException($"No such variable: {variableName}");
+                throw new InvalidOperationException($"No such variable: {functionName}");
             }
         }
 

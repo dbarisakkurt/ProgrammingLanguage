@@ -592,21 +592,21 @@ namespace ProgrammingLanguage.SyntaxAnalysis
             {
                 Eat(TokenType.LEFT_PAREN);
 
-                OrderedDictionary dict = (OrderedDictionary)Interpreter.Environment.Get(((AtomicNode)functionCallName).Value.ToString());
+                //OrderedDictionary dict = (OrderedDictionary)Interpreter.SymbolTable.Get(((AtomicNode)functionCallName).Value.ToString());
 
                 args = ParseArguments();
 
-                if(args.Count > 0)
-                {
-                    int i = 0;
-                    foreach(Node n in args)
-                    {
-                        dict[i] = ((AtomicNode)n).Value;
-                        i += 1;
-                    }
+                //if(args.Count > 0)
+                //{
+                //    int i = 0;
+                //    foreach(Node n in args)
+                //    {
+                //        dict[i] = ((AtomicNode)n).Value;
+                //        i += 1;
+                //    }
 
-                }
 
+                //}
                 Eat(TokenType.RIGHT_PAREN);
             }
 
@@ -672,19 +672,19 @@ namespace ProgrammingLanguage.SyntaxAnalysis
                 {
 
                     List<Node> parameterList = ParseParameters();
-                    if(parameterList.Count > 0)
-                    {
-                        Interpreter.Environment.Add(((AtomicNode)funcName).Value.ToString(), new OrderedDictionary());
-                    }
+                    //if(parameterList.Count > 0)
+                    //{
+                    //    Interpreter.SymbolTable.Add(((AtomicNode)funcName).Value.ToString(), new OrderedDictionary());
+                    //}
 
-                    foreach(Node n in parameterList)
-                    {
-                        OrderedDictionary dict1 = (OrderedDictionary)Interpreter.Environment.Get(((AtomicNode)funcName).Value.ToString());
-                        dict1[((AtomicNode)n).Value.ToString()] = null;
+                    //foreach(Node n in parameterList)
+                    //{
+                    //    OrderedDictionary dict1 = (OrderedDictionary)Interpreter.SymbolTable.Get(((AtomicNode)funcName).Value.ToString());
+                    //    dict1[((AtomicNode)n).Value.ToString()] = null;
 
-                    }
+                    //}
 
-                    funcBlock = new FunctionBlock(funcName, parameterList, funcStatements);
+                    funcBlock = new FunctionDeclarationNode(funcName, parameterList, funcStatements);
 
                     if (Match(TokenType.RIGHT_PAREN))
                     {

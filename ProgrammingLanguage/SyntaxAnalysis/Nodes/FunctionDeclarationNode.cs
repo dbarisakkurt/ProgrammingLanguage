@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ProgrammingLanguage.SyntaxAnalysis.Nodes
 {
-    internal class FunctionBlock : Node, INodeList
+    internal class FunctionDeclarationNode : Node, INodeList
     {
         //###################################################################################
         #region Fields
@@ -34,7 +34,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis.Nodes
         //###################################################################################
         #region Constructor
 
-        public FunctionBlock(Node functionName, List<Node> parameterList, List<Node> statements)
+        public FunctionDeclarationNode(Node functionName, List<Node> parameterList, List<Node> statements)
         {
             m_FunctionName = functionName;
             m_ParameterList = parameterList;

@@ -4,6 +4,8 @@ using System.Globalization;
 using ProgrammingLanguage.SyntaxAnalysis.Nodes;
 using ProgrammingLanguage.LexicalAnalysis;
 using System.Collections.Specialized;
+using System.Collections;
+using System.Linq;
 
 namespace ProgrammingLanguage.Interpreter
 {
@@ -15,10 +17,12 @@ namespace ProgrammingLanguage.Interpreter
         internal List<object> Eval(ProgramNode programNode)
         {
             List<object> values = new List<object>();
+            FunctionTable functionTable = new FunctionTable();
+            SymbolTable symbolTable = new SymbolTable();
 
             foreach(Node node in programNode.Statements)
             {
-                var lineRes = Evaluate(node);
+                var lineRes = Evaluate(node, symbolTable, functionTable);
 
                 if(lineRes != null)
                 {
@@ -34,7 +38,7 @@ namespace ProgrammingLanguage.Interpreter
         //###################################################################################
         #region Private Methods
 
-        private object Evaluate(Node node)
+        private object Evaluate(Node node, SymbolTable symbolTable, FunctionTable functionTable)
         {
             if (node is AtomicNode)
             {
@@ -45,9 +49,9 @@ namespace ProgrammingLanguage.Interpreter
             {
                 string varName = ((VariableDeclarationNode)node).VariableName;
                 object rhv = ((VariableDeclarationNode)node).RightHandValue;
-                object value = Evaluate((Node)rhv);
+                object value = Evaluate((Node)rhv, symbolTable, functionTable);
 
-                Environment.Add(varName, value);
+                symbolTable.Add(varName, value);
 
                 return null;
             }
@@ -58,7 +62,7 @@ namespace ProgrammingLanguage.Interpreter
                 var value = ((AtomicNode)toBePrinted).Value;
                 if(((AtomicNode)toBePrinted).Token.TokenType == TokenType.VARIABLE)
                 {
-                    printResult = Environment.Get(value.ToString());
+                    printResult = symbolTable.Get(value.ToString());
                 }
                 else
                 {
@@ -81,29 +85,29 @@ namespace ProgrammingLanguage.Interpreter
             else if (node is BinaryOperatorNode)
             {
                 Node left = ((BinaryOperatorNode)node).Left;
-                object leftVal = Evaluate(left);
+                object leftVal = Evaluate(left, symbolTable, functionTable);
 
                 Node oper = ((BinaryOperatorNode)node).Operator;
                 Token operatorToken = ((AtomicNode)oper).Token;
 
                 Node right = ((BinaryOperatorNode)node).Right;
-                object rightVal = Evaluate(right);
+                object rightVal = Evaluate(right, symbolTable, functionTable);
 
                 if (operatorToken.TokenType == TokenType.PLUS) //int or variable
                 {
-                    return Operate(left, right, leftVal, rightVal, (a, b) => a + b);
+                    return Operate(left, right, leftVal, rightVal, (a, b) => a + b, symbolTable);
                 }
                 else if (operatorToken.TokenType == TokenType.MINUS)
                 {
-                    return Operate(left, right, leftVal, rightVal, (a, b) => a - b);
+                    return Operate(left, right, leftVal, rightVal, (a, b) => a - b, symbolTable);
                 }
                 else if (operatorToken.TokenType == TokenType.MULTIPLY)
                 {
-                    return Operate(left, right, leftVal, rightVal, (a, b) => a * b);
+                    return Operate(left, right, leftVal, rightVal, (a, b) => a * b, symbolTable);
                 }
                 else if (operatorToken.TokenType == TokenType.DIVIDE)
                 {
-                    return Operate(left, right, leftVal, rightVal, (a, b) => a / b);
+                    return Operate(left, right, leftVal, rightVal, (a, b) => a / b, symbolTable);
                 }
                 else if (operatorToken.TokenType == TokenType.AND_KEYWORD)
                 {
@@ -115,27 +119,27 @@ namespace ProgrammingLanguage.Interpreter
                 }
                 else if (operatorToken.TokenType == TokenType.GREATER_THAN)
                 {
-                    return Compare(left, right, leftVal, rightVal, (a, b) => a > b);
+                    return Compare(left, right, leftVal, rightVal, (a, b) => a > b, symbolTable);
                 }
                 else if (operatorToken.TokenType == TokenType.GREATER_THAN_OR_EQUAL)
                 {
-                    return Compare(left, right, leftVal, rightVal, (a, b) => a >= b);
+                    return Compare(left, right, leftVal, rightVal, (a, b) => a >= b, symbolTable);
                 }
                 else if (operatorToken.TokenType == TokenType.LESS_THAN)
                 {
-                    return Compare(left, right, leftVal, rightVal, (a, b) => a < b);
+                    return Compare(left, right, leftVal, rightVal, (a, b) => a < b, symbolTable);
                 }
                 else if (operatorToken.TokenType == TokenType.LESS_THAN_OR_EQUAL)
                 {
-                    return Compare(left, right, leftVal, rightVal, (a, b) => a <= b);
+                    return Compare(left, right, leftVal, rightVal, (a, b) => a <= b, symbolTable);
                 }
                 else if (operatorToken.TokenType == TokenType.EQUAL)
                 {
-                    return Compare(left, right, leftVal, rightVal, (a, b) => a == b);
+                    return Compare(left, right, leftVal, rightVal, (a, b) => a == b, symbolTable);
                 }
                 else if (operatorToken.TokenType == TokenType.NOT_EQUAL)
                 {
-                    return Compare(left, right, leftVal, rightVal, (a, b) => a != b);
+                    return Compare(left, right, leftVal, rightVal, (a, b) => a != b, symbolTable);
                 }
                 else
                 {
@@ -148,7 +152,7 @@ namespace ProgrammingLanguage.Interpreter
                 Node prefix = ((UnaryNode)node).PrefixNode;
                 Node actual = ((UnaryNode)node).Node;
 
-                object r = Evaluate(actual);
+                object r = Evaluate(actual, symbolTable, functionTable);
 
                 if(prefix!= null && ((AtomicNode)prefix).Token.TokenType ==TokenType.NOT)
                 {
@@ -160,6 +164,10 @@ namespace ProgrammingLanguage.Interpreter
                     int val = Int32.Parse(r.ToString());
                     return -val;
                 }
+                else
+                {
+                    return r;
+                }
             }
             else if(node is IfNode)
             {
@@ -167,12 +175,12 @@ namespace ProgrammingLanguage.Interpreter
                 List<Node> ifBlock = ((IfNode)node).Statements;
                 List<Node> elseBlock = ((IfNode)node).ElseBlock;
 
-                object res = Evaluate(condition);
+                object res = Evaluate(condition, symbolTable, functionTable);
                 if(res is bool && (bool)res == true)
                 {
                     foreach(Node n in ifBlock)
                     {
-                        Evaluate(n);
+                        Evaluate(n, symbolTable, functionTable);
                     }
                     
                 }
@@ -180,7 +188,7 @@ namespace ProgrammingLanguage.Interpreter
                 {
                     foreach (Node n in elseBlock)
                     {
-                        Evaluate(n);
+                        Evaluate(n, symbolTable, functionTable);
                     }
                 }
 
@@ -190,72 +198,82 @@ namespace ProgrammingLanguage.Interpreter
                 Node condition = ((WhileNode)node).Condition;
                 List<Node> whileBlock = ((WhileNode)node).Statements;
 
-                while (Evaluate(condition) is bool && (bool)Evaluate(condition) == true)
+                while (Evaluate(condition, symbolTable, functionTable) is bool && (bool)Evaluate(condition, symbolTable, functionTable) == true)
                 {
                     foreach(Node n in whileBlock)
                     {
-                        Evaluate(n);
+                        Evaluate(n, symbolTable, functionTable);
                     }
                 }               
             }
-            else if(node is FunctionBlock)
+            else if(node is FunctionDeclarationNode)
             {
-                Node fnName = ((FunctionBlock)node).FunctionName;
+                SymbolTable funcSymTable = new SymbolTable();
 
-                FunctionTable.Add(((AtomicNode)fnName).Value.ToString(), node);
+                Node fnName = ((FunctionDeclarationNode)node).FunctionName;
+                string functionName = ((AtomicNode)fnName).Value.ToString();
 
-                
-                //List<Node> parameters = ((FunctionBlock)node).ParameterList;
-                //List<Node> fnStatements = ((FunctionBlock)node).Statements;
+                functionTable.Add(functionName, (FunctionDeclarationNode)node);
+                List<Node> parameters = ((FunctionDeclarationNode)node).ParameterList;
 
-                //if (parameters.Count > 0)
-                //{
-                //    string funcName = ((AtomicNode)fnName).Value.ToString();
-                //    //Environment.Add(funcName, new Dictionary<string, object>());
+                foreach(Node n in parameters)
+                {
+                    funcSymTable.Add(((AtomicNode)n).Value.ToString(), null);
+                }
 
-                //    foreach (Node n in parameters)
-                //    {
-                //        object r = Environment.Get(funcName);
-                //        if(r is OrderedDictionary)
-                //        {
-                //            var dict = (OrderedDictionary) r;
-                //            var a = dict[((AtomicNode)n).Value.ToString()];
-                //        }
-                //        else
-                //        {
-                //            throw new InvalidOperationException("Not a dictionary");
-                //        }
-                //    }
-                //}
+                symbolTable.Add(functionName, funcSymTable);
             }
             else if(node is CallNode)
             {
                 Node fnName = ((CallNode)node).m_Name;
+                List<Node> parameterValues = ((CallNode)node).m_Arguments;
                 string fonName = ((AtomicNode)fnName).Value.ToString();
 
-                Node fnBlock = FunctionTable.Get(fonName);
-                FunctionBlock fonkBloc = (FunctionBlock)fnBlock;
-                List<Node> statements = fonkBloc.Statements;
+                SymbolTable symTable = (SymbolTable)symbolTable.Get(fonName);
+
+                for(int i = 0; i< parameterValues.Count; i++)
+                {
+                    object nodeVal = ((AtomicNode)parameterValues[i]).Value;
+
+                    DictionaryEntry de = symTable.m_Variables.Cast<DictionaryEntry>().ElementAt(i);
+                    de.Value = nodeVal;
+                    symTable.Add(de.Key.ToString(), de.Value);
+                }
+
+
+                symbolTable = symTable;
+
+                FunctionDeclarationNode fnBlock = functionTable.Get(fonName);
+                List<Node> statements = fnBlock.Statements;
 
                 foreach(Node stat in statements)
                 {
                     if(stat is ReturnNode)
                     {
-                        return Evaluate(stat);
+                        return Evaluate(stat, symbolTable, functionTable);
                     }
 
-                    Evaluate(stat);
+                    Evaluate(stat, symbolTable, functionTable);
                 }
-                
+            }
+            else if(node is ReturnNode)
+            {
+                ReturnNode retNode = ((ReturnNode)node);
 
-
-
+                if (((AtomicNode)retNode.ToBeReturned).Token.TokenType == TokenType.VARIABLE)
+                {
+                    return symbolTable.Get(((AtomicNode)retNode.ToBeReturned).Value.ToString());
+                }
+                else
+                {
+                    return ((AtomicNode)retNode.ToBeReturned).Value;
+                }
             }
 
             return null;
         }
 
-        bool Compare(Node left, Node right, object leftVal, object rightVal, Func<int, int, bool> compare)
+        bool Compare(Node left, Node right, object leftVal, object rightVal, Func<int, int, bool> compare, SymbolTable symbolTable)
         {
             int leftInt, rightInt;
             if(Int32.TryParse(leftVal.ToString(), out leftInt) && Int32.TryParse(rightVal.ToString(), out rightInt))
@@ -265,20 +283,20 @@ namespace ProgrammingLanguage.Interpreter
             //left only is integer
             else if(Int32.TryParse(leftVal.ToString(), out leftInt) && !Int32.TryParse(rightVal.ToString(), out rightInt))
             {
-                int rightVal__ = Int32.Parse(Environment.Get(((AtomicNode)right).Value.ToString()).ToString());
+                int rightVal__ = Int32.Parse(symbolTable.Get(((AtomicNode)right).Value.ToString()).ToString());
                 return CompareInteger(Int32.Parse(leftVal.ToString()), rightVal__, compare);
             }
             //right only is integer
             else if (!Int32.TryParse(leftVal.ToString(), out leftInt) && Int32.TryParse(rightVal.ToString(), out rightInt))
             {
-                int leftVal__ = Int32.Parse(Environment.Get(((AtomicNode)left).Value.ToString()).ToString());
+                int leftVal__ = Int32.Parse(symbolTable.Get(((AtomicNode)left).Value.ToString()).ToString());
                 return CompareInteger(leftVal__, Int32.Parse(rightVal.ToString()), compare);
             }
             //no integer, means both are variables
             else if (!Int32.TryParse(leftVal.ToString(), out leftInt) && !Int32.TryParse(rightVal.ToString(), out rightInt))
             {
-                int leftVal__ = Int32.Parse(Environment.Get(((AtomicNode)left).Value.ToString()).ToString());
-                int rightVal__ = Int32.Parse(Environment.Get(((AtomicNode)right).Value.ToString()).ToString());
+                int leftVal__ = Int32.Parse(symbolTable.Get(((AtomicNode)left).Value.ToString()).ToString());
+                int rightVal__ = Int32.Parse(symbolTable.Get(((AtomicNode)right).Value.ToString()).ToString());
                 return CompareInteger(leftVal__, rightVal__, compare);
             }
             else
@@ -287,7 +305,7 @@ namespace ProgrammingLanguage.Interpreter
             }
         }
 
-        int Operate(Node left, Node right, object leftVal, object rightVal, Func<int, int, int> operate)
+        int Operate(Node left, Node right, object leftVal, object rightVal, Func<int, int, int> operate, SymbolTable symbolTable)
         {
             int leftInt, rightInt;
             if (Int32.TryParse(leftVal.ToString(), out leftInt) && Int32.TryParse(rightVal.ToString(), out rightInt))
@@ -297,20 +315,20 @@ namespace ProgrammingLanguage.Interpreter
             //left only is integer
             else if (Int32.TryParse(leftVal.ToString(), out leftInt) && !Int32.TryParse(rightVal.ToString(), out rightInt))
             {
-                int rightVal__ = Int32.Parse(Environment.Get(((AtomicNode)right).Value.ToString()).ToString());
+                int rightVal__ = Int32.Parse(symbolTable.Get(((AtomicNode)right).Value.ToString()).ToString());
                 return OperateMath(Int32.Parse(leftVal.ToString()), rightVal__, operate);
             }
             //right only is integer
             else if (!Int32.TryParse(leftVal.ToString(), out leftInt) && Int32.TryParse(rightVal.ToString(), out rightInt))
             {
-                int leftVal__ = Int32.Parse(Environment.Get(((AtomicNode)left).Value.ToString()).ToString());
+                int leftVal__ = Int32.Parse(symbolTable.Get(((AtomicNode)left).Value.ToString()).ToString());
                 return OperateMath(leftVal__, Int32.Parse(rightVal.ToString()), operate);
             }
             //no integer, means both are variables
             else if (!Int32.TryParse(leftVal.ToString(), out leftInt) && !Int32.TryParse(rightVal.ToString(), out rightInt))
             {
-                int leftVal__ = Int32.Parse(Environment.Get(((AtomicNode)left).Value.ToString()).ToString());
-                int rightVal__ = Int32.Parse(Environment.Get(((AtomicNode)right).Value.ToString()).ToString());
+                int leftVal__ = Int32.Parse(symbolTable.Get(((AtomicNode)left).Value.ToString()).ToString());
+                int rightVal__ = Int32.Parse(symbolTable.Get(((AtomicNode)right).Value.ToString()).ToString());
                 return OperateMath(leftVal__, rightVal__, operate);
             }
             else

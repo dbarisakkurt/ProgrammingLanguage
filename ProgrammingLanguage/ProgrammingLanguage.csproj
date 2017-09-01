@@ -43,7 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConsoleHelper.cs" />
-    <Compile Include="Interpreter\Environment.cs" />
+    <Compile Include="Interpreter\SymbolTable.cs" />
     <Compile Include="Interpreter\Evaluator.cs" />
     <Compile Include="Interpreter\FunctionTable.cs" />
     <Compile Include="LexicalAnalysis\Lexer.cs" />
@@ -53,7 +53,7 @@
     <Compile Include="SyntaxAnalysis\Nodes\AtomicNode.cs" />
     <Compile Include="SyntaxAnalysis\Nodes\BinaryOperatorNode.cs" />
     <Compile Include="SyntaxAnalysis\Nodes\CallNode.cs" />
-    <Compile Include="SyntaxAnalysis\Nodes\FunctionBlock.cs" />
+    <Compile Include="SyntaxAnalysis\Nodes\FunctionDeclarationNode.cs" />
     <Compile Include="SyntaxAnalysis\Nodes\IfNode.cs" />
     <Compile Include="SyntaxAnalysis\Nodes\INodeList.cs" />
     <Compile Include="SyntaxAnalysis\Nodes\Node.cs" />

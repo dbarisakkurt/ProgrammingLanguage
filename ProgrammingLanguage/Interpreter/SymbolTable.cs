@@ -1,28 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 
 namespace ProgrammingLanguage.Interpreter
 {
-    internal static class Environment
+    internal class SymbolTable
     {
         //###################################################################################
         #region Fields
 
-        private static Dictionary<string, object> m_Variables = new Dictionary<string, object>();
+        internal OrderedDictionary m_Variables = new OrderedDictionary();
 
         #endregion
 
         //###################################################################################
         #region Methods
 
-        internal static void Add(string variableName, object value)
+        internal void Add(string variableName, object value)
         {
             m_Variables[variableName] = value;
         }
 
-        internal static object Get(string variableName)
+        internal object Get(string variableName)
         {
-            if(m_Variables.ContainsKey(variableName))
+            if(m_Variables.Contains(variableName))
             {
                 return m_Variables[variableName];
             }

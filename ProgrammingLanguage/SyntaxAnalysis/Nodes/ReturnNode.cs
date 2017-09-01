@@ -13,7 +13,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis.Nodes
         //###################################################################################
         #region Properties
 
-        public Node ToBePrinted { get { return m_ToBeReturned; } }
+        public Node ToBeReturned { get { return m_ToBeReturned; } }
 
         #endregion
 
