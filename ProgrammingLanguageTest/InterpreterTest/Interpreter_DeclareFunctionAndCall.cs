@@ -27,7 +27,8 @@ namespace ProgrammingLanguageTest.InterpreterTest
         //###################################################################################
         #region Tests
 
-        [TestCase("değişken x = 3; değişken y = 4; fonk topla (a, b) { değişken z = a + b; dön z;} yazdır topla(3, 4);", "7")]
+        [TestCase("değişken x = 3; değişken y = 4; fonk topla (a, b) { değişken z = a + b; dön z;} değişken c = topla(3, 4); yazdır c;", "7")]
+        //[TestCase("değişken x = 3; değişken y = 4; fonk topla (a, b) { değişken z = a + b; dön z;} yazdır topla(3, 4);", "7")]
         public void Function_Interpret_Successfull(string input, string result)
         {
             Lexer lexer = new Lexer(input);

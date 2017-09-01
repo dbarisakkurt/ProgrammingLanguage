@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using ProgrammingLanguage.SyntaxAnalysis.Nodes;
 using ProgrammingLanguage.LexicalAnalysis;
+using System.Collections.Specialized;
 
 namespace ProgrammingLanguage.Interpreter
 {
@@ -149,12 +150,12 @@ namespace ProgrammingLanguage.Interpreter
 
                 object r = Evaluate(actual);
 
-                if(((AtomicNode)prefix).Token.TokenType ==TokenType.NOT)
+                if(prefix!= null && ((AtomicNode)prefix).Token.TokenType ==TokenType.NOT)
                 {
                     bool val = (bool)r;
                     return !val;
                 }
-                else if (((AtomicNode)prefix).Token.TokenType == TokenType.MINUS)
+                else if (prefix!=null && ((AtomicNode)prefix).Token.TokenType == TokenType.MINUS)
                 {
                     int val = Int32.Parse(r.ToString());
                     return -val;
@@ -196,6 +197,59 @@ namespace ProgrammingLanguage.Interpreter
                         Evaluate(n);
                     }
                 }               
+            }
+            else if(node is FunctionBlock)
+            {
+                Node fnName = ((FunctionBlock)node).FunctionName;
+
+                FunctionTable.Add(((AtomicNode)fnName).Value.ToString(), node);
+
+                
+                //List<Node> parameters = ((FunctionBlock)node).ParameterList;
+                //List<Node> fnStatements = ((FunctionBlock)node).Statements;
+
+                //if (parameters.Count > 0)
+                //{
+                //    string funcName = ((AtomicNode)fnName).Value.ToString();
+                //    //Environment.Add(funcName, new Dictionary<string, object>());
+
+                //    foreach (Node n in parameters)
+                //    {
+                //        object r = Environment.Get(funcName);
+                //        if(r is OrderedDictionary)
+                //        {
+                //            var dict = (OrderedDictionary) r;
+                //            var a = dict[((AtomicNode)n).Value.ToString()];
+                //        }
+                //        else
+                //        {
+                //            throw new InvalidOperationException("Not a dictionary");
+                //        }
+                //    }
+                //}
+            }
+            else if(node is CallNode)
+            {
+                Node fnName = ((CallNode)node).m_Name;
+                string fonName = ((AtomicNode)fnName).Value.ToString();
+
+                Node fnBlock = FunctionTable.Get(fonName);
+                FunctionBlock fonkBloc = (FunctionBlock)fnBlock;
+                List<Node> statements = fonkBloc.Statements;
+
+                foreach(Node stat in statements)
+                {
+                    if(stat is ReturnNode)
+                    {
+                        return Evaluate(stat);
+                    }
+
+                    Evaluate(stat);
+                }
+                
+
+
+
             }
 
             return null;

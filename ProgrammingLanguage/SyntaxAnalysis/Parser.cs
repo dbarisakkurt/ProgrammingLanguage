@@ -2,6 +2,8 @@
 using ProgrammingLanguage.LexicalAnalysis;
 using System.Collections.Generic;
 using ProgrammingLanguage.SyntaxAnalysis.Nodes;
+using System.Collections.Specialized;
+using System.Collections;
 
 //grammar based on https://github.com/fsacer/FailLang by fsacer but simplified
 
@@ -152,12 +154,13 @@ namespace ProgrammingLanguage.SyntaxAnalysis
         {
             if(Match(TokenType.FUN_KEYWORD))
             {
-                ParseFunDeclaration();
+                Node node = ParseFunDeclaration();
+                nodeList.Statements.Add(node);
             }
             else if(Match(TokenType.VAR_KEYWORD))
             {
                 Node node = ParseVariableDecleration();
-                m_ProgramNode.Statements.Add(node);
+                nodeList.Statements.Add(node);
             }
             else
             {
@@ -223,13 +226,14 @@ namespace ProgrammingLanguage.SyntaxAnalysis
 
         private Node ParseReturn()
         {
-            Node returnValNode = null;
+            ReturnNode rNode = null;
             if(Match(TokenType.RETURN_KEYWORD))
             {
                 Eat(TokenType.RETURN_KEYWORD);
-                returnValNode = ParseExpression();
+                Node returnValNode = ParseExpression();
+                rNode = new ReturnNode(returnValNode);
             }
-            return returnValNode;
+            return rNode;
         }
 
         private Node ParsePrintStatement()
@@ -336,7 +340,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis
 
         }
 
-        private void ParseFunDeclaration()
+        private Node ParseFunDeclaration()
         {
             if(Match(TokenType.FUN_KEYWORD))
             {
@@ -344,8 +348,10 @@ namespace ProgrammingLanguage.SyntaxAnalysis
 
                 Node funcName = new AtomicNode(m_CurrentToken, m_CurrentToken.Value);
                 Eat(TokenType.VARIABLE);
-                ParseFunctionBody(funcName);
+                Node funcBlock = ParseFunctionBody(funcName);
+                return funcBlock;
             }
+            return null;
         }
 
         #endregion
@@ -580,32 +586,58 @@ namespace ProgrammingLanguage.SyntaxAnalysis
         private Node ParseCall()
         {
             Node functionCallName = ParsePrimary();
+            List<Node> args = new List<Node>();
 
-            while(Match(TokenType.LEFT_PAREN))
+            while (Match(TokenType.LEFT_PAREN))
             {
                 Eat(TokenType.LEFT_PAREN);
 
-                ParseArguments();
+                OrderedDictionary dict = (OrderedDictionary)Interpreter.Environment.Get(((AtomicNode)functionCallName).Value.ToString());
+
+                args = ParseArguments();
+
+                if(args.Count > 0)
+                {
+                    int i = 0;
+                    foreach(Node n in args)
+                    {
+                        dict[i] = ((AtomicNode)n).Value;
+                        i += 1;
+                    }
+
+                }
 
                 Eat(TokenType.RIGHT_PAREN);
             }
 
-            return null;
+            Node callNode = new CallNode(functionCallName, args);
+
+            return callNode;
         }
 
         #endregion
 
         #region Function Call Parse
 
-        private void ParseArguments()
+        private List<Node> ParseArguments()
         {
-            ParseExpression();
+            List<Node> arguments = new List<Node>();
+            Node n1 = ParseExpression();
+            if(n1!=null)
+            {
+                arguments.Add(n1);
+            }
 
             while(Match(TokenType.COMMA))
             {
                 Eat(TokenType.COMMA);
-                ParseExpression();
+                Node n2 = ParseExpression();
+                if(n2!=null)
+                {
+                    arguments.Add(n2);
+                }
             }
+            return arguments;
         }
 
         private List<Node> ParseParameters()
@@ -620,14 +652,16 @@ namespace ProgrammingLanguage.SyntaxAnalysis
                 while(Match(TokenType.COMMA))
                 {
                     Eat(TokenType.COMMA);
+                    parameters.Add(new AtomicNode(m_CurrentToken, m_CurrentToken.Value));
                     Eat(TokenType.VARIABLE);
                 }
             }
             return parameters;
         }
 
-        private void ParseFunctionBody(Node funcName)
+        private Node ParseFunctionBody(Node funcName)
         {
+            INodeList funcBlock = null;
             List<Node> funcStatements = new List<Node>();
 
             if(Match(TokenType.LEFT_PAREN))
@@ -636,8 +670,21 @@ namespace ProgrammingLanguage.SyntaxAnalysis
 
                 if(Match(TokenType.VARIABLE))
                 {
+
                     List<Node> parameterList = ParseParameters();
-                    INodeList funcBlock = new FunctionBlock(funcName, parameterList, funcStatements);
+                    if(parameterList.Count > 0)
+                    {
+                        Interpreter.Environment.Add(((AtomicNode)funcName).Value.ToString(), new OrderedDictionary());
+                    }
+
+                    foreach(Node n in parameterList)
+                    {
+                        OrderedDictionary dict1 = (OrderedDictionary)Interpreter.Environment.Get(((AtomicNode)funcName).Value.ToString());
+                        dict1[((AtomicNode)n).Value.ToString()] = null;
+
+                    }
+
+                    funcBlock = new FunctionBlock(funcName, parameterList, funcStatements);
 
                     if (Match(TokenType.RIGHT_PAREN))
                     {
@@ -647,6 +694,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis
                     ParseBlock(funcBlock);
                 }
             }
+            return (Node)funcBlock;
         }
 
         #endregion
