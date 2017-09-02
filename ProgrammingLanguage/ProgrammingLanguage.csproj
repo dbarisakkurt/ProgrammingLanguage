@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="ConsoleHelper.cs" />
     <Compile Include="Interpreter\Evaluator.cs" />
+    <Compile Include="Interpreter\ReturnException.cs" />
     <Compile Include="Interpreter\SymbolTable.cs" />
     <Compile Include="Interpreter\FunctionTable.cs" />
     <Compile Include="LexicalAnalysis\Lexer.cs" />

@@ -192,7 +192,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis
             if (Match(TokenType.VARIABLE) && NextToken().TokenType == TokenType.LEFT_PAREN)
             {
                 Node returnValNode = ParseCall();
-                nodeList.AddStatement(returnValNode);
+                nodeList.AddStatement(returnValNode, elseCall);
             }
             else if (Match(TokenType.VARIABLE))
             {
@@ -221,7 +221,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis
             else if (Match(TokenType.RETURN_KEYWORD))
             {
                 Node returnValNode = ParseReturn();
-                nodeList.AddStatement(returnValNode);
+                nodeList.AddStatement(returnValNode, elseCall);
             }
             else
             {

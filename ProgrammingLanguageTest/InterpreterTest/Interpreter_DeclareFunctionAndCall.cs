@@ -60,6 +60,9 @@ namespace ProgrammingLanguageTest.InterpreterTest
         [TestCase("fonk besDegeri () { değişken z = 5; dön z;} değişken c = besDegeri(); yazdır c;", "5")]
         [TestCase("değişken x = 3; değişken y = 4; fonk topla (a, b) { değişken z = a + b; dön z;} değişken c = topla(3, 4); yazdır c;", "7")]
         [TestCase("değişken x = 3; değişken y = 4; fonk topla (a, b) { değişken z = a + b; dön z;} yazdır topla(3, 4);", "7")]
+        [TestCase("fonk deneme() { yazdır 1; dön 5; yazdır 3; } yazdır deneme();", "1\r\n5")]
+        [TestCase("fonk ikiKatı(a, b) { eğer (b == 1) {dön a*2;} değilse { dön a*4;} } yazdır ikiKatı(6, 2);", "24")]
+        [TestCase("fonk iftenDon() { eğer (doğru) { yazdır 1; dön 5; yazdır 2; } değilse {yazdır 11; dön 55; yazdır 22;} } yazdır iftenDon();", "1\r\n5")]
         public void Function_Interpret_Successfull(string input, string result)
         {
             Lexer lexer = new Lexer(input);

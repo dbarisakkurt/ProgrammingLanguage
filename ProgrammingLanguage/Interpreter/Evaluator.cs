@@ -70,11 +70,11 @@ namespace ProgrammingLanguage.Interpreter
                 object conditionResult = Eval(condition, symbolTable, functionTable);
                 if (conditionResult is bool && (bool)conditionResult == true)
                 {
-                    EvalStatementsInList(ifBlock, symbolTable, functionTable);
+                    return EvalStatementsInList(ifBlock, symbolTable, functionTable);
                 }
                 else if(conditionResult is bool && (bool)conditionResult == false)
                 {
-                    EvalStatementsInList(elseBlock, symbolTable, functionTable);
+                    return EvalStatementsInList(elseBlock, symbolTable, functionTable);
                 }
                 else
                 {
@@ -189,43 +189,52 @@ namespace ProgrammingLanguage.Interpreter
             }
             else if(node is CallNode)
             {
-                string functionName = ((CallNode)node).FunctionName;
-                List<Node> parameterValues = ((CallNode)node).Arguments;
-
-
-                SymbolTable localSymbolTable = (SymbolTable)symbolTable.Get(functionName);
-
-                FunctionDeclarationNode fnBlock = functionTable.Get(functionName);
-               
-
-                if (fnBlock.ParameterList.Count != parameterValues.Count)
+                try
                 {
-                    throw new InvalidOperationException("Number of parameters in function and function call does not match");
-                }
 
-                for (int i = 0; i < parameterValues.Count; i++)
-                {
-                    object nodeVal = Eval(parameterValues[i], symbolTable, functionTable);
 
-                    DictionaryEntry dictEntry = localSymbolTable.m_Variables.Cast<DictionaryEntry>().ElementAt(i);
-                    dictEntry.Value = nodeVal;
-                    localSymbolTable.Add(dictEntry.Key.ToString(), dictEntry.Value);
-                }
+                    string functionName = ((CallNode)node).FunctionName;
+                    List<Node> parameterValues = ((CallNode)node).Arguments;
 
-                symbolTable = localSymbolTable;
-                
-                List<Node> statements = fnBlock.Statements;
-                
-                foreach (Node stat in statements)
-                {
-                    if (stat is ReturnNode)
+                    SymbolTable localSymbolTable = (SymbolTable)symbolTable.Get(functionName);
+
+                    FunctionDeclarationNode fnBlock = functionTable.Get(functionName);
+
+
+                    if (fnBlock.ParameterList.Count != parameterValues.Count)
                     {
-                        return Eval(stat, symbolTable, functionTable);
+                        throw new InvalidOperationException("Number of parameters in function and function call does not match");
                     }
-                    else
+
+                    for (int i = 0; i < parameterValues.Count; i++)
                     {
-                        Eval(stat, symbolTable, functionTable);
+                        object nodeVal = Eval(parameterValues[i], symbolTable, functionTable);
+
+                        DictionaryEntry dictEntry = localSymbolTable.m_Variables.Cast<DictionaryEntry>().ElementAt(i);
+                        dictEntry.Value = nodeVal;
+                        localSymbolTable.Add(dictEntry.Key.ToString(), dictEntry.Value);
                     }
+
+                    symbolTable = localSymbolTable;
+
+                    List<Node> statements = fnBlock.Statements;
+
+                    foreach (Node stat in statements)
+                    {
+                        if (stat is ReturnNode)
+                        {
+                            object result = Eval(stat, symbolTable, functionTable);
+                            throw new ReturnException("Returned", result);
+                        }
+                        else
+                        {
+                            Eval(stat, symbolTable, functionTable);
+                        }
+                    }
+                }
+                catch(ReturnException returnException)
+                {
+                    return returnException.Value;
                 }
             }
             else if(node is PrintNode)
@@ -271,12 +280,22 @@ namespace ProgrammingLanguage.Interpreter
             }
         }
 
-        private void EvalStatementsInList(List<Node> nodes, SymbolTable symbolTable, FunctionTable functionTable)
+        private object EvalStatementsInList(List<Node> nodes, SymbolTable symbolTable, FunctionTable functionTable)
         {
             foreach (Node node in nodes)
             {
-                Eval(node, symbolTable, functionTable);
+                if(node is ReturnNode)
+                {
+                    object result = Eval(node, symbolTable, functionTable);
+                    throw new ReturnException("Returned", result);
+                }
+                else
+                {
+                    Eval(node, symbolTable, functionTable);
+                }
+                
             }
+            return null;
         }
 
         private bool CompareInteger(int input1, int input2, Func<int, int, bool> comparisonOperator)

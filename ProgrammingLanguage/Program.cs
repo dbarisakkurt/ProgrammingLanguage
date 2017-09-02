@@ -4,10 +4,10 @@
 //TODO LATER: enable float numbers
 //TODO LATER: support for statements like yazdır topla(2,3); that calls function in print statement
 //TODO LATER: recursive function call
+//TODO LATER: % opeartor
 
 
-//TODO: TEST return keyword not at the end of the function
-//TODO: TEST  version that returns value =>[TestCase(@"fonk ikiKatı(a, b) { eğer (b == 1) {yazdır 12;} değilse { yazdır 24;} } ikiKatı(6, 2);", "24")]
+//TODO: return exception isini yap.
 
 using ProgrammingLanguage.Interpreter;
 using ProgrammingLanguage.LexicalAnalysis;
