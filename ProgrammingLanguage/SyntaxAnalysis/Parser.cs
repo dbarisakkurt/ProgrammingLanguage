@@ -155,12 +155,12 @@ namespace ProgrammingLanguage.SyntaxAnalysis
             if(Match(TokenType.FUN_KEYWORD))
             {
                 Node node = ParseFunDeclaration();
-                nodeList.Statements.Add(node);
+                nodeList.AddStatement(node, elseCall);
             }
             else if(Match(TokenType.VAR_KEYWORD))
             {
                 Node node = ParseVariableDecleration();
-                nodeList.Statements.Add(node);
+                nodeList.AddStatement(node, elseCall);
             }
             else
             {

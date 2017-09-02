@@ -34,6 +34,9 @@ namespace ProgrammingLanguageTest.InterpreterTest
         //recursive function call
         //string equality test
 
+        [TestCase("fonk ifade(a) { dön a; } yazdır ifade( (2+6)*3 );", "24")]
+        [TestCase("fonk ifade(a) { dön a; } yazdır ifade( 2+6*3 );", "20")]
+        [TestCase("fonk ifade(a) { dön a; } yazdır ifade(2*6);", "12")]
         [TestCase("fonk merhabaYaz() { yazdır \"merhaba\"; } merhabaYaz();", "merhaba")]
         [TestCase("fonk doğruDön() { dön doğru; } yazdır doğruDön();", "doğru")]
         [TestCase("fonk stringDön() { dön \"merhaba\"; } değişken t = stringDön(); yazdır t;", "merhaba")]

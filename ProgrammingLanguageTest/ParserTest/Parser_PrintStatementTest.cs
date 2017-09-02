@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using ProgrammingLanguage.LexicalAnalysis;
 using ProgrammingLanguage.SyntaxAnalysis;
+using ProgrammingLanguage.SyntaxAnalysis.Nodes;
 
 namespace ProgrammingLanguageTest.ParserTest
 {
@@ -26,7 +27,9 @@ namespace ProgrammingLanguageTest.ParserTest
             Parser parser = new Parser(lexer.TokenList);
             parser.ParseProgram();
 
-            //No Exception occurs
+            Assert.IsNotNull(parser.ProgramNode);
+            Assert.AreEqual(1, parser.ProgramNode.Statements.Count);
+            Assert.True(parser.ProgramNode.Statements[0] is PrintNode);
         }
 
         #endregion
