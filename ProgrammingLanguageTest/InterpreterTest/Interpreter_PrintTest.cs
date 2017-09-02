@@ -50,6 +50,16 @@ namespace ProgrammingLanguageTest.InterpreterTest
             }
         }
 
+        [TestCase("yaz 6;", "6")]
+        public void PrintKeywordIsWrong_Interpret_Exception(string input, string result)
+        {
+            Lexer lexer = new Lexer(input);
+            lexer.Lex();
+
+            Parser parser = new Parser(lexer.TokenList);
+            Assert.Throws<ParseException>(() => parser.ParseProgram());
+        }
+
         #endregion
     }
 }
