@@ -657,6 +657,10 @@ namespace ProgrammingLanguage.SyntaxAnalysis
                 {
 
                     List<Node> parameterList = ParseParameters();
+                    if(parameterList.Count > 32)
+                    {
+                        throw new ParseException("Number of function arguments must be less than 32");
+                    }
 
                     funcBlock = new FunctionDeclarationNode(funcName, parameterList, funcStatements);
 

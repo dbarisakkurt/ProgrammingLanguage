@@ -16,7 +16,7 @@ namespace ProgrammingLanguage.Interpreter
         {
             List<object> values = new List<object>();
             FunctionTable functionTable = new FunctionTable();
-            SymbolTable symbolTable = new SymbolTable();
+            SymbolTable symbolTable = new SymbolTable(null);
 
             foreach (Node node in programNode.Statements)
             {
@@ -110,7 +110,7 @@ namespace ProgrammingLanguage.Interpreter
             }
             else if (node is FunctionDeclarationNode)
             {
-                SymbolTable funcSymTable = new SymbolTable();
+                SymbolTable funcSymTable = new SymbolTable(symbolTable);
                 string functionName = ((FunctionDeclarationNode)node).FunctionName;
 
                 functionTable.Add(functionName, (FunctionDeclarationNode)node);
@@ -192,7 +192,16 @@ namespace ProgrammingLanguage.Interpreter
                 string functionName = ((CallNode)node).FunctionName;
                 List<Node> parameterValues = ((CallNode)node).Arguments;
 
+
                 SymbolTable localSymbolTable = (SymbolTable)symbolTable.Get(functionName);
+
+                FunctionDeclarationNode fnBlock = functionTable.Get(functionName);
+               
+
+                if (fnBlock.ParameterList.Count != parameterValues.Count)
+                {
+                    throw new InvalidOperationException("Number of parameters in function and function call does not match");
+                }
 
                 for (int i = 0; i < parameterValues.Count; i++)
                 {
@@ -204,10 +213,9 @@ namespace ProgrammingLanguage.Interpreter
                 }
 
                 symbolTable = localSymbolTable;
-
-                FunctionDeclarationNode fnBlock = functionTable.Get(functionName);
+                
                 List<Node> statements = fnBlock.Statements;
-
+                
                 foreach (Node stat in statements)
                 {
                     if (stat is ReturnNode)
@@ -284,7 +292,11 @@ namespace ProgrammingLanguage.Interpreter
         private bool Compare(Node left, Node right, object leftVal, object rightVal, Func<int, int, bool> compare, SymbolTable symbolTable)
         {
             int leftInt, rightInt;
-            if (Int32.TryParse(leftVal.ToString(), out leftInt) && Int32.TryParse(rightVal.ToString(), out rightInt))
+            if (left is StringNode && right is StringNode)
+            {
+                return leftVal.ToString() == rightVal.ToString();
+            }
+            else if (Int32.TryParse(leftVal.ToString(), out leftInt) && Int32.TryParse(rightVal.ToString(), out rightInt))
             {
                 return CompareInteger(Int32.Parse(leftVal.ToString()), Int32.Parse(rightVal.ToString()), compare);
             }
@@ -303,13 +315,31 @@ namespace ProgrammingLanguage.Interpreter
             //no integer, means both are variables
             else if (!Int32.TryParse(leftVal.ToString(), out leftInt) && !Int32.TryParse(rightVal.ToString(), out rightInt))
             {
-                int leftVal__ = Int32.Parse(symbolTable.Get(((NumberNode)left).Value.ToString()).ToString());
-                int rightVal__ = Int32.Parse(symbolTable.Get(((NumberNode)right).Value.ToString()).ToString());
-                return CompareInteger(leftVal__, rightVal__, compare);
+                return ComparetringOrInteger(left, right, compare, symbolTable);
             }
             else
             {
                 throw new InvalidOperationException("Compare error");
+            }
+        }
+
+        private bool ComparetringOrInteger(Node left, Node right, Func<int, int, bool> compare, SymbolTable symbolTable)
+        {
+            if(left is NumberNode && right is NumberNode)
+            {
+                int leftVal__ = Int32.Parse(symbolTable.Get(((NumberNode)left).Value.ToString()).ToString());
+                int rightVal__ = Int32.Parse(symbolTable.Get(((NumberNode)right).Value.ToString()).ToString());
+                return CompareInteger(leftVal__, rightVal__, compare);
+            }
+            if(left is StringNode && right is StringNode)
+            {
+                int leftVal__ = Int32.Parse(symbolTable.Get(((StringNode)left).Value.ToString()).ToString());
+                int rightVal__ = Int32.Parse(symbolTable.Get(((StringNode)right).Value.ToString()).ToString());
+                return CompareInteger(leftVal__, rightVal__, compare);
+            }
+            else
+            {
+                return false;
             }
         }
 

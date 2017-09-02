@@ -9,8 +9,14 @@ namespace ProgrammingLanguage.Interpreter
         #region Fields
 
         internal OrderedDictionary m_Variables = new OrderedDictionary();
+        internal SymbolTable m_OuterTable;
 
         #endregion
+
+        public SymbolTable(SymbolTable outerTable)
+        {
+            m_OuterTable = outerTable;
+        }
 
         //###################################################################################
         #region Methods
@@ -28,7 +34,23 @@ namespace ProgrammingLanguage.Interpreter
             }
             else
             {
-                throw new InvalidOperationException($"No such variable: {variableName}");
+                if (m_OuterTable != null)
+                {
+                    SymbolTable outer = m_OuterTable;
+                    while (outer != null)
+                    {
+                        object result = (SymbolTable)outer.Get(variableName);
+                        if (result != null)
+                            return result;
+
+                        outer = outer.m_OuterTable;
+                    }
+                    throw new InvalidOperationException("Given variable not found");
+                }
+                else
+                {
+                    throw new InvalidOperationException("Given variable not found");
+                }
             }
         }
 

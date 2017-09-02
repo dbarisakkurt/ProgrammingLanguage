@@ -6,10 +6,11 @@
 //TODO LATER: recursive function call
 
 
-//TODO: add an upper limit to number of function arguments
-//TODO: check number of declaration of func arguments and parameters in the call, and add a test 
+//TODO: if it is not in current symboltable look for the 2nd order table
 //TODO: add assert section to all parser tests
-//TODO: write tests for cases in Interpreter test
+//TODO: write tests expression like topla(2+1);
+//TODO: TEST return keyword not at the end of the function
+//TODO: TEST  version that returns value =>[TestCase(@"fonk ikiKatı(a, b) { eğer (b == 1) {yazdır 12;} değilse { yazdır 24;} } ikiKatı(6, 2);", "24")]
 
 using ProgrammingLanguage.Interpreter;
 using ProgrammingLanguage.LexicalAnalysis;
