@@ -16,22 +16,9 @@ namespace ProgrammingLanguage
     {
         static void Main(string[] args)
         {
-            string input = @"
-değişken x = 0;
-oldukça( x < 5)
-{
-    yazdır x;
-    x = x + 1;
-}
-";
-            Lexer lexer = new Lexer(input);
-            lexer.Lex();
-
-            Parser parser = new Parser(lexer.TokenList);
-            parser.ParseProgram();
-
-            Evaluator eval = new Evaluator();
-            eval.Evaluate(parser.ProgramNode);
+            ConsoleHelper.ParseArguments(args);
+            
+            
 
             System.Console.ReadLine();
         }

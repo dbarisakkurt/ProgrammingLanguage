@@ -1,4 +1,8 @@
-﻿using System;
+﻿using ProgrammingLanguage.Interpreter;
+using ProgrammingLanguage.LexicalAnalysis;
+using ProgrammingLanguage.SyntaxAnalysis;
+using System;
+using System.IO;
 
 namespace ProgrammingLanguage
 {
@@ -9,7 +13,7 @@ namespace ProgrammingLanguage
 
         internal static void ParseArguments(string[] arguments)
         {
-            if(arguments.Length == 0 || arguments.Length > 1)
+            if (arguments.Length == 0 || arguments.Length > 1)
             {
                 PrintHelp();
             }
@@ -23,6 +27,8 @@ namespace ProgrammingLanguage
                 }
                 else
                 {
+                    string input = File.ReadAllText(arguments[0]);
+                    RunInterpreter(input);
                     //process file
                 }
             }
@@ -37,6 +43,18 @@ namespace ProgrammingLanguage
         {
             Console.WriteLine("Usage: language.exe <filename>");
             Console.WriteLine("Usage: language.exe -v");
+        }
+
+        private static void RunInterpreter(string input)
+        {
+            Lexer lexer = new Lexer(input);
+            lexer.Lex();
+
+            Parser parser = new Parser(lexer.TokenList);
+            parser.ParseProgram();
+
+            Evaluator eval = new Evaluator();
+            eval.Evaluate(parser.ProgramNode);
         }
 
         #endregion
