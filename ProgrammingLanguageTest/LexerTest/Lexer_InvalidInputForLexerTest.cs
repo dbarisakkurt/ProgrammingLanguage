@@ -12,7 +12,6 @@ namespace ProgrammingLanguageTest.LexerTest
         [TestCase("'")]
         [TestCase("\\")]
         [TestCase("?")]
-        [TestCase("%")]
         [TestCase("$")]
         //[TestCase("değişken x = .5;")]
         //[TestCase("değişken x = 5.;")]

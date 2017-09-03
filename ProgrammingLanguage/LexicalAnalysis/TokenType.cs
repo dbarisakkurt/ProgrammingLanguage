@@ -28,6 +28,7 @@ namespace ProgrammingLanguage.LexicalAnalysis
         LEFT_CURLY_BRACE,
         RIGHT_CURLY_BRACE,
         COMMA,
+        MODULO,
 
         PRINT_KEYWORD,
         IF_KEYWORD,

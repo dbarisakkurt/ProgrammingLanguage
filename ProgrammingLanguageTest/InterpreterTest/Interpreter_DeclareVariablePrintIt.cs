@@ -38,6 +38,9 @@ namespace ProgrammingLanguageTest.InterpreterTest
         [TestCase("değişken x = 9/3; yazdır x;", "3")]
         [TestCase("değişken x = 2 + 4 * 5; yazdır x;", "22")]
         [TestCase("değişken x = (2 + 4) * 5; yazdır x;", "30")]
+        [TestCase("değişken x = 10 % 5; yazdır x;", "0")]
+        [TestCase("değişken x = 11 % 5; yazdır x;", "1")]
+        [TestCase("değişken x = 10 % 4 * 2; yazdır x;", "4")]
         public void DeclareIntegerNumber_PrintIt_InterpretsCorrectValue(string input, string result)
         {
             Lexer lexer = new Lexer(input);

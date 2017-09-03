@@ -3,7 +3,6 @@
 //TODO LATER fix the curly brace requirement after değilse keyword.
 //TODO LATER: enable float numbers
 //TODO LATER: recursive function call
-//TODO LATER: % opeartor
 
 
 using ProgrammingLanguage.Interpreter;

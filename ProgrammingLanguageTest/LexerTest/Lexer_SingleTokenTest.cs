@@ -57,6 +57,7 @@ namespace ProgrammingLanguageTest.LexerTest
         //[TestCase("0.0", TokenType.NUMBER)]
         [TestCase("\"hello\"", TokenType.STRING)]
         [TestCase(" \"hello\" ", TokenType.STRING)]
+        [TestCase("%", TokenType.MODULO)]
         public void CreateLexer_LexSingleToken_Successful(string input, TokenType tokenType)
         {
             Lexer lexer = new Lexer(input);

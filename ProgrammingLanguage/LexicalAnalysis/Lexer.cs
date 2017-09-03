@@ -74,6 +74,11 @@ namespace ProgrammingLanguage.LexicalAnalysis
                         Advance();
                         m_TokenList.Add(token);
                         break;
+                    case '%':
+                        token = new Token(TokenType.MODULO, '%');
+                        Advance();
+                        m_TokenList.Add(token);
+                        break;
                     case '=':
                         if(Peek() == '=')
                         {

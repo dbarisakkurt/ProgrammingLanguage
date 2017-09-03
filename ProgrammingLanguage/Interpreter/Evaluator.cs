@@ -150,6 +150,10 @@ namespace ProgrammingLanguage.Interpreter
                 {
                     return Operate(left, right, leftVal, rightVal, (a, b) => a / b, symbolTable);
                 }
+                else if (operatorToken.TokenType == TokenType.MODULO)
+                {
+                    return Operate(left, right, leftVal, rightVal, (a, b) => a % b, symbolTable);
+                }
                 else if (operatorToken.TokenType == TokenType.AND_KEYWORD)
                 {
                     return (bool)leftVal && (bool)rightVal;

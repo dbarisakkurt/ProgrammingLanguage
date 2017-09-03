@@ -26,7 +26,7 @@ using System.Collections;
 //equality    → comparison (( "!=" | "==" ) comparison )*
 //comparison  → term (( ">" | ">=" | "<" | "<=" ) term )*
 //term        → factor(( "-" | "+" ) factor )*                              
-//factor      → unary(( "/" | "*" ) unary )*
+//factor      → unary(( "/" | "*" | "%" ) unary )*
 //unary       → ( "!" | "-" ) unary | primary | call  ;
 //call        → primary( "(" arguments? ")" )* ;                                                        
 //primary     → NUMBER | STRING | "doğru" | "yanlış" | "boşdeğer" | IDENTIFIER | "(" expression ")"
@@ -480,7 +480,7 @@ namespace ProgrammingLanguage.SyntaxAnalysis
         {
             Node unaryNode = ParseUnary();
 
-            while (Match(TokenType.DIVIDE) || Match(TokenType.MULTIPLY))
+            while (Match(TokenType.DIVIDE) || Match(TokenType.MULTIPLY) || Match(TokenType.MODULO))
             {
                 OperatorNode operatorNode = new OperatorNode(m_CurrentToken, m_CurrentToken.Value.ToString());
                 if (Match(TokenType.DIVIDE))
@@ -490,6 +490,10 @@ namespace ProgrammingLanguage.SyntaxAnalysis
                 else if (Match(TokenType.MULTIPLY))
                 {
                     Eat(TokenType.MULTIPLY);
+                }
+                else if (Match(TokenType.MODULO))
+                {
+                    Eat(TokenType.MODULO);
                 }
 
                 Node rightUnaryNode = ParseUnary();
