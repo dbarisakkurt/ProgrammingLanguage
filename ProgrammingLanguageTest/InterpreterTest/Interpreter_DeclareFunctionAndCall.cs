@@ -27,13 +27,6 @@ namespace ProgrammingLanguageTest.InterpreterTest
         //###################################################################################
         #region Tests
 
-        //if inside function
-        //while inside function
-        //function call and argument size different test = exception
-        //function call inside function call
-        //recursive function call
-        //string equality test
-
         [TestCase("fonk ifade(a) { dön a; } yazdır ifade( (2+6)*3 );", "24")]
         [TestCase("fonk ifade(a) { dön a; } yazdır ifade( 2+6*3 );", "20")]
         [TestCase("fonk ifade(a) { dön a; } yazdır ifade(2*6);", "12")]

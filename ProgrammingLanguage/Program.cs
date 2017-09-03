@@ -2,7 +2,9 @@
 //TODO LATER: add array type
 //TODO LATER fix the curly brace requirement after değilse keyword.
 //TODO LATER: enable float numbers
-//TODO LATER: recursive function call
+
+//TODO: division by 0 error catch 
+//TODO: stackoverflow exception in fibonacci test
 
 
 using ProgrammingLanguage.Interpreter;

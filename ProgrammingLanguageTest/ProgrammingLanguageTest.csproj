@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExampleTest\CompleteProgramTest.cs" />
+    <Compile Include="InterpreterTest\InterpreterRecursiveFunctions.cs" />
     <Compile Include="InterpreterTest\Interpreter_ComplexProgram.cs" />
     <Compile Include="InterpreterTest\Interpreter_DeclareFunctionAndCall.cs" />
     <Compile Include="InterpreterTest\Interpreter_DeclareVariablePrintIt.cs" />

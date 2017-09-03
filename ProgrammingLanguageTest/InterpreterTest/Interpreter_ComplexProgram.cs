@@ -80,29 +80,6 @@ namespace ProgrammingLanguageTest.InterpreterTest
             Console.SetOut(out1);
         }
 
-        //[TestCase(@"değişken d= 4; fonk topla(v) {
-        //eğer (v > 0) { dön v + topla(v - 1); } değilse { dön; } } yazdır topla(d);", "10")]
-        //public void RecursiveFunction_Interpret_Successfull(string input, string result)
-        //{
-        //    Lexer lexer = new Lexer(input);
-        //    lexer.Lex();
-
-        //    Parser parser = new Parser(lexer.TokenList);
-        //    parser.ParseProgram();
-        //    var out1 = Console.Out;
-
-        //    using (StringWriter sw = new StringWriter())
-        //    {
-        //        Console.SetOut(sw);
-
-        //        Evaluator eval = new Evaluator();
-        //        eval.Evaluate(parser.ProgramNode);
-
-        //        Assert.AreEqual(result, sw.ToString().Trim());
-        //    }
-        //    Console.SetOut(out1);
-        //}
-
         [TestCase("fonk e() { yazdır 2; } fonk d() { yazdır 1; e(); } d();", "1\r\n2")]
         public void FunctionCallInsideFunction_Interpret_Successfull(string input, string result)
         {
