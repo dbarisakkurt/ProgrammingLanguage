@@ -17,6 +17,9 @@ değişken metin = "merhaba";
 ```
 diyerek değişken tanımlanabilir. Tek bir satırda sadece 1 değişken tanımlaması yapılmalıdır.
 
+## Operatörler
++, -, *, /, %, ve, veya, ==, !=, <, >, <=, >=
+
 ## Bool İfadeler
 ```
 değişken bayrak = doğru;
@@ -70,9 +73,7 @@ fonk topla(a, b)
 Fonksiyon tanımlama ve tanımlanmış fonksiyonu çağırma yukarıdaki örnekteki gibi yapılır.
 
 ## Kısıtlar
-* Henüz rekürsif (özyinelemeli) fonksiyon çağrısı desteklenmemektedir.
 * Sadece 5, 124 gibi tamsayılar destekleniyor. 12.3 gibi kesirli sayılar desteklenmemektedir. Dolayısıyla bölme işleminin sonucu da tamsayıdır.
 * Dilde şu an için dizi veri tipi yoktur.
-* Dilde şu an için bölümden kalanı veren (diğer dillerdeki % gibi) bir operatör yoktur.
 
 # English
