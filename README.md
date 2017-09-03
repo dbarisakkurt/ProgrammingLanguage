@@ -1,6 +1,13 @@
 # Türkçe
 
-Bu proje Türkçe anahtar sözüklere sahip basit bir yorumlayıcı uygulaması ve programlama dili içerir.
+Bu proje Türkçe anahtar sözüklere sahip basit bir yorumlayıcı uygulaması ve programlama dili içerir. [Buradan](https://drive.google.com/open?id=0B-0eXZXRmKFLckJ0REZqWGIySW8) ilgili yorumlayıcıyı indirebilirsiniz. Zip dosyasını indirdiktan sonra bilgisayarınıza açın. Açtığınız dizine gidin.
+
+Bir txt dosyasına -diyelim ki merhaba.txt- programınızı yazın.
+
+```
+ProgrammingLanguage C:\Users\xxxx\merhaba.txt
+```
+komutu ile yorumlayıcıyı çalıştırıp programınızın sonucunu görebilirsiniz.
 
 ## Değişken Tanımlama
 Örnek:
