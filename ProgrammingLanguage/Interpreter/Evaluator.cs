@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using ProgrammingLanguage.LexicalAnalysis;
 using ProgrammingLanguage.SyntaxAnalysis.Nodes;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization;
 
 namespace ProgrammingLanguage.Interpreter
 {
@@ -14,13 +17,21 @@ namespace ProgrammingLanguage.Interpreter
 
         internal void Evaluate(ProgramNode programNode)
         {
-            List<object> values = new List<object>();
-            FunctionTable functionTable = new FunctionTable();
-            SymbolTable symbolTable = new SymbolTable(null);
-
-            foreach (Node node in programNode.Statements)
+            try
             {
-                Eval(node, symbolTable, functionTable);
+                List<object> values = new List<object>();
+                FunctionTable functionTable = new FunctionTable();
+                SymbolTable symbolTable = new SymbolTable(null);
+
+                foreach (Node node in programNode.Statements)
+                {
+                    Eval(node, symbolTable, functionTable);
+                }
+            }
+            catch (DivideByZeroException)
+            {
+                Console.WriteLine("Program aborted");
+                Console.WriteLine("Division by 0 is not allowed");
             }
         }
 
@@ -196,11 +207,13 @@ namespace ProgrammingLanguage.Interpreter
                 try
                 {
 
-
                     string functionName = ((CallNode)node).FunctionName;
                     List<Node> parameterValues = ((CallNode)node).Arguments;
 
+                    
+
                     SymbolTable localSymbolTable = (SymbolTable)symbolTable.Get(functionName);
+                    SymbolTable dc = (SymbolTable)DeepClone(localSymbolTable);
 
                     FunctionDeclarationNode fnBlock = functionTable.Get(functionName);
 
@@ -214,12 +227,12 @@ namespace ProgrammingLanguage.Interpreter
                     {
                         object nodeVal = Eval(parameterValues[i], symbolTable, functionTable);
 
-                        DictionaryEntry dictEntry = localSymbolTable.m_Variables.Cast<DictionaryEntry>().ElementAt(i);
+                        DictionaryEntry dictEntry = dc.m_Variables.Cast<DictionaryEntry>().ElementAt(i);
                         dictEntry.Value = nodeVal;
-                        localSymbolTable.Add(dictEntry.Key.ToString(), dictEntry.Value);
+                        dc.Add(dictEntry.Key.ToString(), dictEntry.Value);
                     }
 
-                    symbolTable = localSymbolTable;
+                    symbolTable = dc;
 
                     List<Node> statements = fnBlock.Statements;
 
@@ -396,6 +409,28 @@ namespace ProgrammingLanguage.Interpreter
             {
                 throw new InvalidOperationException("Compare error");
             }
+        }
+
+        Object DeepClone(Object original)
+        {
+            // Construct a temporary memory stream
+            MemoryStream stream = new MemoryStream();
+
+            // Construct a serialization formatter that does all the hard work
+            BinaryFormatter formatter = new BinaryFormatter();
+
+            // This line is explained in the "Streaming Contexts" section
+            formatter.Context = new StreamingContext(StreamingContextStates.Clone);
+
+            // Serialize the object graph into the memory stream
+            formatter.Serialize(stream, original);
+
+            // Seek back to the start of the memory stream before deserializing
+            stream.Position = 0;
+
+            // Deserialize the graph into a new set of objects
+            // and return the root of the graph (deep copy) to the caller
+            return (formatter.Deserialize(stream));
         }
 
         #endregion

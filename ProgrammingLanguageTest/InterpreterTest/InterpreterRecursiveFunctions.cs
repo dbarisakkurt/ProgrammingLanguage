@@ -32,10 +32,17 @@ namespace ProgrammingLanguageTest.InterpreterTest
         eğer (v == 1) { dön 1; } değilse { dön v * faktoriyel(v-1); } } yazdır faktoriyel(d);", "120")]
         [TestCase(@"değişken d= 3; fonk merhabaYaz(v) {
         eğer (v < 1) { dön; } değilse { yazdır ""merhaba""; merhabaYaz(v-1); } } merhabaYaz(d);", "merhaba\r\nmerhaba\r\nmerhaba")]
-        //[TestCase(@"değişken d= 9; fonk fibonacci(v) {
-        //eğer (v == 0) { dön 0; }
-        //eğer (v == 1) { dön 1; } 
-        //değilse { dön fibonacci(v-1) + fibonacci(v-2); } } yazdır fibonacci(d);", "21")]
+        [TestCase(@"
+        fonk fibonacci(v) {
+            eğer (v == 0) { 
+                dön 0; 
+            }
+            değilse { 
+                eğer (v == 1) { dön 1; } 
+                değilse { dön fibonacci(v-1) + fibonacci(v-2); }
+            } 
+        } 
+        yazdır fibonacci(9);", "34")]
         [TestCase(@"değişken m= 60; değişken n = 20; fonk gcd(m, n) {
         eğer (m % n == 0) { dön n; } değilse { dön gcd(n, m%n); } } yazdır gcd(m, n);", "20")]
         public void Summation_Interpret_Successfull(string input, string result)

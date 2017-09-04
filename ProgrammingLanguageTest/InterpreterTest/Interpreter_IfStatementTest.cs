@@ -53,6 +53,8 @@ namespace ProgrammingLanguageTest.InterpreterTest
                     eğer(9 < 5) { yazdır a; }", "")]
         [TestCase("değişken x = 3; eğer ( x == 2 ) { yazdır 2 ; } değilse { eğer (x == 3) {  yazdır 3; }  değilse { yazdır 101;} }", "3")]
         [TestCase("değişken x = 1; eğer ( x == 2 ) { yazdır 2 ; } değilse { eğer (x >3) {  yazdır 3 ; }  değilse { yazdır 1001;} }", "1001")]
+        [TestCase(@"değişken x = 9; değişken a = 1; değişken b = -1;
+                    eğer(x < 10) { yazdır 9; } eğer (x < 11) { yazdır 11; } değilse { yazdır 12; }", "9\r\n11")]
         public void IfStatement_Interpret_Successfull(string input, string result)
         {
             Lexer lexer = new Lexer(input);

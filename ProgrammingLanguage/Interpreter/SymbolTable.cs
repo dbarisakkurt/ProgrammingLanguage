@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Specialized;
+using System.Runtime.Serialization;
 
 namespace ProgrammingLanguage.Interpreter
 {
+    [Serializable]
     internal class SymbolTable
     {
         //###################################################################################
@@ -12,6 +14,18 @@ namespace ProgrammingLanguage.Interpreter
         internal SymbolTable m_OuterTable;
 
         #endregion
+
+        public SymbolTable OuterTable
+        {
+            get { return m_OuterTable; }
+            set { m_OuterTable = value; }
+        }
+
+        public OrderedDictionary Variables
+        {
+            get { return m_Variables; }
+            set { m_Variables = value; }
+        }
 
         public SymbolTable(SymbolTable outerTable)
         {

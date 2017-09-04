@@ -212,6 +212,29 @@ namespace ProgrammingLanguageTest.InterpreterTest
             }
         }
 
+        [TestCase("değişken x = 5; yazdır x/0;")]
+        public void DeclareIBoolUsingEquality_PrintIt_InterpretsCorrectValue(string input)
+        {
+            Lexer lexer = new Lexer(input);
+            lexer.Lex();
+
+            Parser parser = new Parser(lexer.TokenList);
+            parser.ParseProgram();
+
+            var out1 = Console.Out;
+
+            using (StringWriter sw = new StringWriter())
+            {
+                Console.SetOut(sw);
+                Evaluator eval = new Evaluator();
+                eval.Evaluate(parser.ProgramNode);
+
+                Assert.AreEqual("Program aborted\r\nDivision by 0 is not allowed", sw.ToString().Trim());
+            }
+
+            
+        }
+
         #endregion
     }
 }
