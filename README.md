@@ -1,3 +1,79 @@
+
+# English
+This is an interpreter/programming language implementation project. The language has Turkish keywords. Download the interpreter [here](https://drive.google.com/open?id=0B-0eXZXRmKFLckJ0REZqWGIySW8)
+
+Open a text file e.g. hello.txt and write your program. Give the command and you can see the result of your program.
+
+```
+ProgrammingLanguage C:\Users\xxxx\hello.txt
+```
+
+## Variable Declaration
+Örnek:
+```
+değişken num 5;
+değişken text"merhaba";
+```
+One variable declaration per line.
+
+## Operators
++, -, *, /, %, ve, veya, ==, !=, <, >, <=, >=
+
+
+## Bool Statements
+```
+değişken bayrak = doğru;
+değişken bayrak = yanlış;
+```
+doğru is the keyword for true and yanlış is the keyword for false.
+
+## Conditionals
+Örnek:
+```
+eğer (sayı <= 5)
+{
+    sayı = sayı + 1;
+}
+değilse
+{
+    sayı = sayı - 1;
+}
+```
+Curly brackets are must even if you have only one statement after eğer or değilse like Go language. ve keywords is for && and veya keyword is for ||.
+
+```
+eğer (sayı <= 5 ve sayı >= 10)
+{
+    sayı = sayı + 1;
+}
+```
+
+
+## Loops
+Örnek:
+```
+oldukça (sayı < 5)
+{
+    sayı = sayı + 1;
+}
+```
+Curly brackets are must even if you have only one statement after oldukça
+
+## Function Declaration and Call
+Örnek:
+```
+fonk topla(a, b)
+{
+  değişken c = a + b;
+  dön c;
+}
+```
+Above is the example
+
+## Restrictions
+* Only integers are supported. No float or double support.
+* No array data type.
+
 # Türkçe
 
 Bu proje Türkçe anahtar sözüklere sahip basit bir yorumlayıcı uygulaması ve programlama dili içerir. [Buradan](https://drive.google.com/open?id=0B-0eXZXRmKFLckJ0REZqWGIySW8) ilgili yorumlayıcıyı indirebilirsiniz. Zip dosyasını indirdiktan sonra bilgisayarınıza açın. Açtığınız dizine gidin.
@@ -76,4 +152,3 @@ Fonksiyon tanımlama ve tanımlanmış fonksiyonu çağırma yukarıdaki örnekt
 * Sadece 5, 124 gibi tamsayılar destekleniyor. 12.3 gibi kesirli sayılar desteklenmemektedir. Dolayısıyla bölme işleminin sonucu da tamsayıdır.
 * Dilde şu an için dizi veri tipi yoktur.
 
-# English
